@@ -1,5 +1,6 @@
-package com.leerv474.peach_note.user;
+package com.leerv474.peach_note.token;
 
+import com.leerv474.peach_note.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ public class ActivationCode {
     @Id
     @GeneratedValue
     private Long id;
-    private String token;
+    private String code;
     private LocalDateTime issuedAt;
     private LocalDateTime expiresAt;
     private LocalDateTime validatedAt;

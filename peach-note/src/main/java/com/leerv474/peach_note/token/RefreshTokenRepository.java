@@ -1,4 +1,4 @@
-package com.leerv474.peach_note.user;
+package com.leerv474.peach_note.token;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

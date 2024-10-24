@@ -1,9 +1,8 @@
 package com.leerv474.peach_note.security;
 
-import com.leerv474.peach_note.user.RefreshToken;
-import com.leerv474.peach_note.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +17,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtUtils {
+public class AccessTokenService {
     @Value("${application.security.jwt.access-expiration}")
     private long jwtAccessExpiration;
     @Value("${application.security.jwt.secret-key}")
@@ -34,6 +33,8 @@ public class JwtUtils {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
+        authorities.forEach(System.out::println);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
@@ -45,19 +46,19 @@ public class JwtUtils {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUserEmail(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return !isTokenExpired(token) && isUserValid(token, userDetails);
     }
 
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    private boolean isUserValid(String token, UserDetails userDetails) {
+        return extractUsername(token).equals(userDetails.getUsername());
     }
-    public String extractUserEmail(String jwt) {
-        return extractClaim(jwt, Claims::getSubject);
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

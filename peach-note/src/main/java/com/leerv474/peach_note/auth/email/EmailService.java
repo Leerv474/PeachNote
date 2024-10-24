@@ -3,6 +3,7 @@ package com.leerv474.peach_note.auth.email;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,11 +20,13 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
+    @Autowired
     private final JavaMailSender mailSender;
+    @Autowired
     private final SpringTemplateEngine templateEngine;
 
     //TODO: add to application.properties
-    @Value("application.mailing.frontend.sender-email")
+    @Value("${application.mailing.backend.sender-email}")
     private String senderEmail;
 
     @Async

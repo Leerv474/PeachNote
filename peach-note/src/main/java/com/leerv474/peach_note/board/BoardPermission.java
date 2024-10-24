@@ -16,12 +16,12 @@ public class BoardPermission {
 
     @ManyToOne
     @MapsId("user_id")
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @ManyToOne
     @MapsId("board_id")
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "board_id", referencedColumnName = "id")
     private Board board;
 
     @OneToOne

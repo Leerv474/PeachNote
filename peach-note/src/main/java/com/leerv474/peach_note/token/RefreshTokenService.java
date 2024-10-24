@@ -1,30 +1,27 @@
-package com.leerv474.peach_note.security;
+package com.leerv474.peach_note.token;
 
-import com.leerv474.peach_note.user.RefreshToken;
-import com.leerv474.peach_note.user.RefreshTokenRepository;
 import com.leerv474.peach_note.user.User;
 import com.leerv474.peach_note.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
@@ -32,26 +29,19 @@ public class RefreshTokenService {
     private long jwtRefreshExpiration;
 
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
+    private final RefreshTokenRepository refreshTokenRepository;
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public Optional<RefreshToken> findByToken(String token){
-        return refreshTokenRepository.findByTokenHash(token);
-    }
-
-    public String generateRefreshToken(HashMap<String, Object> claims, UserDetails userDetails, ) {
+    public String generateRefreshToken(HashMap<String, Object> claims, UserDetails userDetails) {
         return buildToken(claims, userDetails, jwtRefreshExpiration);
     }
 
-    public String buildToken(Map<String, Object> claims, UserDetails userDetails, long jwtRefreshExpiration) {
+    private String buildToken(Map<String, Object> claims, UserDetails userDetails, long jwtRefreshExpiration) {
         var authorities = userDetails.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-        User owner = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         String newToken = Jwts.builder()
                 .setClaims(claims)
@@ -62,49 +52,57 @@ public class RefreshTokenService {
                 .signWith(getSignInKey())
                 .compact();
 
-        RefreshToken refreshToken = RefreshToken.builder()
-                .revoked(false)
-                .owner(owner)
-                .tokenHash(newToken)
-                .build();
-        refreshTokenRepository.save(refreshToken);
+        saveToken(claims, userDetails, newToken);
         return newToken;
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUserEmail(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    private void saveToken(Map<String, Object> claims, UserDetails userDetails, String token) {
+        User owner = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        RefreshToken refreshToken = RefreshToken.builder()
+                .revoked(false)
+                .owner(owner)
+                .sessionId(claims.get("sessionId").toString())
+                .tokenHash(token)
+                .build();
+        refreshTokenRepository.save(refreshToken);
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    // validation
+    public boolean validateToken(String token) {
+        Claims claims = extractClaims(token);
+        return isTokenRevoked(token) && isTokenExpired(claims);
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    private boolean isTokenRevoked(String token) {
+        // todo: define a custom exception
+        RefreshToken storedToken = refreshTokenRepository.findByTokenHash(token).orElseThrow(() -> new RuntimeException("Token not found"));
+        return storedToken.isRevoked();
     }
 
-    public String extractUserEmail(String token) {
-        return extractClaim(token, Claims::getSubject);
+    private boolean isTokenExpired(Claims claims) {
+        return claims.getExpiration().before(new Date());
+    }
+
+    public String extractUsername(String token) {
+        Claims claims = extractClaims(token);
+        return claims.getSubject();
     }
 
     public String extractSessionId(String token) {
-        return extractAllClaims(token).get("sessionId", String.class);
+        Claims claims = extractClaims(token);
+        return claims.get("sessionId").toString();
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) {
+    private Claims extractClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJwt(token)
                 .getBody();
     }
+
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);

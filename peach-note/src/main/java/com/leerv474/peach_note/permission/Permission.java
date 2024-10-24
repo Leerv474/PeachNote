@@ -1,5 +1,6 @@
 package com.leerv474.peach_note.permission;
 
+import com.leerv474.peach_note.board.BoardPermission;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,6 @@ public class Permission {
     @ColumnDefault("true")
     private Boolean permissionActive;
 
-    @OneToOne(mappedBy = "boardPermission")
-    private Permission permission;
+    @OneToOne(mappedBy = "permission")
+    private BoardPermission boardPermission;
 }

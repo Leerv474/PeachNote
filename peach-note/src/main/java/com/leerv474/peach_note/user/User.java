@@ -2,6 +2,8 @@ package com.leerv474.peach_note.user;
 
 import com.leerv474.peach_note.board.BoardPermission;
 import com.leerv474.peach_note.role.Role;
+import com.leerv474.peach_note.token.ActivationCode;
+import com.leerv474.peach_note.token.RefreshToken;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -31,22 +33,19 @@ public class User implements UserDetails, Principal {
     @Column(nullable = false, insertable = false)
     private Long id;
     @NotNull
-    @NotEmpty
     @Column(unique = true)
     @Size(min = 2, max = 127)
     private String username;
     @NotNull
-    @NotEmpty
     private String password;
     @NotNull
-    @NotEmpty
     @Column(unique = true)
     private String email;
     @Column(columnDefinition = "BOOLEAN DEFAULT true", nullable = false)
     private Boolean accountActive;
     @Column(columnDefinition = "BOOLEAN DEFAULT false", nullable = false)
     private Boolean accountConfirmed;
-    @NotEmpty
+    @Column(nullable = true)
     private String telegramTag;
 
     @OneToMany(mappedBy = "owner")
@@ -58,7 +57,7 @@ public class User implements UserDetails, Principal {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "permission")
+    @OneToMany(mappedBy = "user")
     private List<BoardPermission> boardPermission;
 
     @Override
@@ -80,7 +79,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.email;
     }
 
     @Override
