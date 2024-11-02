@@ -5,7 +5,6 @@ import com.leerv474.peach_note.role.Role;
 import com.leerv474.peach_note.token.ActivationCode;
 import com.leerv474.peach_note.token.RefreshToken;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

@@ -25,7 +25,6 @@ public class EmailService {
     @Autowired
     private final SpringTemplateEngine templateEngine;
 
-    //TODO: add to application.properties
     @Value("${application.mailing.backend.sender-email}")
     private String senderEmail;
 
