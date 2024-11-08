@@ -1,12 +1,13 @@
 services:
   postgres:
-    container_name: postgres-sql-peach-note
+    container_name: postgres_peach_note
     image: postgres
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: peach_note_db
+
     volumes:
       - postgres:/data/postgres
     ports:
@@ -16,7 +17,7 @@ services:
     restart: on-failure
 
   mail-dev:
-    container_name: mail-dev-peach-note
+    container_name: mail-dev-peach_note
     image: maildev/maildev
     ports:
       - 1080:1080
