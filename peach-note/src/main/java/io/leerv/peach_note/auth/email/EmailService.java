@@ -1,7 +1,5 @@
 package io.leerv.peach_note.auth.email;
 
-import io.leerv.peach_note.activationToken.ActivationToken;
-import io.leerv.peach_note.activationToken.ActivationTokenRepository;
 import io.leerv.peach_note.activationToken.ActivationTokenService;
 import io.leerv.peach_note.user.User;
 import jakarta.mail.MessagingException;
@@ -16,11 +14,8 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +30,9 @@ public class EmailService {
 
     public void sendValidationEmail(User user) throws MessagingException {
         String token = tokenService.generateActivationToken();
-        String url = activationUrl + tokenService.generateActivationUrl();
+        String url = tokenService.generateActivationUrl();
         tokenService.saveActivationToken(token, url, user);
-        sendEmail(user.getEmail(), user.getUsername(), EmailTemplateName.ACTIVATE_ACCOUNT, activationUrl, token, "Account activation");
+        sendEmail(user.getEmail(), user.getUsername(), EmailTemplateName.ACTIVATE_ACCOUNT, token, url, "Account activation");
     }
 
     @Async
@@ -59,7 +54,7 @@ public class EmailService {
         );
         Map<String, Object> properties = new HashMap<>();
         properties.put("username", username);
-        properties.put("confirmationUrl", url);
+        properties.put("confirmationUrl", activationUrl + url);
         properties.put("activationCode", token);
 
         Context context = new Context();

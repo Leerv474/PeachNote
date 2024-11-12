@@ -4,7 +4,6 @@ import io.leerv.peach_note.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -18,6 +17,7 @@ public class RefreshToken {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(length = 512, unique = true, nullable = false)
     private String token;
     private Date issuedAt;
     private Date expiresAt;

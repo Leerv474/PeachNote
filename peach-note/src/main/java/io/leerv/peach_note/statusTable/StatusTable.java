@@ -1,8 +1,12 @@
 package io.leerv.peach_note.statusTable;
 
 import io.leerv.peach_note.board.Board;
+import io.leerv.peach_note.project.Project;
+import io.leerv.peach_note.task.Task;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,4 +25,10 @@ public class StatusTable {
     @ManyToOne
     @JoinColumn(name = "board_id", referencedColumnName = "id")
     private Board board;
+
+    @OneToMany(mappedBy = "statusTable", cascade = CascadeType.ALL)
+    private List<Task> taskList;
+
+    @OneToMany(mappedBy = "statusTable", cascade = CascadeType.ALL)
+    private List<Project> projectList;
 }

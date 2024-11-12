@@ -1,7 +1,7 @@
 package io.leerv.peach_note.user;
 
 import io.leerv.peach_note.activationToken.ActivationToken;
-import io.leerv.peach_note.authorities.Authority;
+import io.leerv.peach_note.authorities.Role;
 import io.leerv.peach_note.board.permission.BoardPermission;
 import io.leerv.peach_note.security.RefreshToken;
 import jakarta.persistence.*;
@@ -35,16 +35,16 @@ public class User implements UserDetails, Principal {
     private boolean accountLocked;
     private String telegram_tag;
 
-    @ManyToMany(mappedBy = "users")
-    private List<Authority> authorities;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<Role> roles;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<RefreshToken> refreshTokenList;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<BoardPermission> boardPermissionList;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ActivationToken> token;
 
     @Override
@@ -53,9 +53,19 @@ public class User implements UserDetails, Principal {
     }
 
     @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities.stream()
-                .map(r -> new SimpleGrantedAuthority(r.getAuthority()))
+        return this.roles.stream()
+                .map(r -> new SimpleGrantedAuthority(r.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -66,7 +76,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.accountLocked;
+        return !this.accountLocked;
     }
 
     @Override

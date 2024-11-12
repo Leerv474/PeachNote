@@ -14,6 +14,7 @@ import lombok.*;
 @Table(name = "board_permissions")
 public class BoardPermission {
     @EmbeddedId
+    @Column(insertable = false, updatable = false)
     private BoardPermissionId id;
 
     @ManyToOne
@@ -23,7 +24,7 @@ public class BoardPermission {
 
     @ManyToOne
     @MapsId("boardId")
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "board_id", referencedColumnName = "id")
     private Board board;
 
     @OneToOne

@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.leerv.peach_note.exceptions.RecordNotFound;
 import io.leerv.peach_note.user.User;
 import io.leerv.peach_note.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -22,15 +24,30 @@ import java.util.function.Function;
 public class JwtTokenService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    @Value("${application.jwt.access-expiration}")
+    @Value("${application.security.jwt.access-expiration}")
     private long accessTokenExpiration;
-    @Value("${application.jwt.refresh-expiration}")
+    @Value("${application.security.jwt.refresh-expiration}")
     private long refreshTokenExpiration;
-    @Value("${application.jwt.secret-ket")
+    @Value("${application.security.jwt.secret-key}")
     private String secret;
 
-    public String generateAccessToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, accessTokenExpiration);
+    public String generateAccessToken(User user) {
+        return buildToken(new HashMap<>(), user, accessTokenExpiration);
+    }
+
+    public String generateRefreshToken(User user) {
+        String sessionId = UUID.randomUUID().toString();
+        String token = buildToken(Map.of("sessionId", sessionId), user, refreshTokenExpiration);
+        RefreshToken rsToken = RefreshToken.builder()
+                .token(token)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiresAt(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .revoked(false)
+                .user(user)
+                .sessionId(sessionId)
+                .build();
+        refreshTokenRepository.save(rsToken);
+        return token;
     }
 
     private String buildToken(Map<String, Object> claims, UserDetails userDetails, long expiration) {
@@ -48,6 +65,13 @@ public class JwtTokenService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public boolean validateRefreshToken(String token) {
+        RefreshToken rsToken = refreshTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RecordNotFound("Refresh Token not found"));
+        boolean isExpired = rsToken.getExpiresAt().before(new Date(System.currentTimeMillis())) ;
+        return isExpired && !rsToken.isRevoked();
     }
 
     private boolean isTokenExpired(String token) {
@@ -68,7 +92,7 @@ public class JwtTokenService {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 

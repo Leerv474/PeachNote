@@ -1,6 +1,5 @@
 package io.leerv.peach_note.board;
 
-import io.leerv.peach_note.activationToken.ActivationToken;
 import io.leerv.peach_note.board.permission.BoardPermission;
 import io.leerv.peach_note.statusTable.StatusTable;
 import jakarta.persistence.*;
@@ -24,9 +23,6 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<BoardPermission> boardPermissionList;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<StatusTable> statusTableList;
-
-    @OneToMany(mappedBy = "user")
-    private List<ActivationToken> activationTokenList;
 }

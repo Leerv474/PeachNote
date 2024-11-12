@@ -1,6 +1,5 @@
 package io.leerv.peach_note.security;
 
-import jakarta.mail.Session;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,10 +26,10 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( request ->
+                .authorizeHttpRequests(request ->
                         request.requestMatchers(
-                                "/auth/**"
-                        ).permitAll()
+                                        "/auth/**"
+                                ).permitAll()
                                 .anyRequest()
                                 .authenticated()
                 ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

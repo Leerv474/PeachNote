@@ -1,57 +1,13 @@
 spring:
   profiles:
-    active: ${ACTIVE_PROFILE:dev}
+    active: dev
   servlet:
     multipart:
       max-file-size: 50MB
 
-  datasource:
-    url: jdbc:postgresql://${POSTGRES_SQL_HOST}:${POSTGRES_SQL_PORT}/${POSTGRES_SQL_DB}
-    username: ${POSTGRES_SQL_USERNAME}
-    password: ${POSTGRES_SQL_PASSWORD}
-
-  jpa:
-    generate-dll: true
-    show-sql: false
-    hibernate:
-      dll-auto: update
-    properties:
-      hibernate:
-        jdbc:
-          time_zone: UTC
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-        physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    database: postgresql
-  mail:
-    host: localhost
-    port: 1025
-    username: admin
-    password: 1234
-    properties:
-      mail:
-        smtp:
-          trust: "*"
-        auth: true
-        starttls:
-          enable: true
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000
-
-application:
-  security:
-    jwt:
-      secret-key: 3qg6jrn0qlbOBylzivgGyCzfFL+stoIGowLCYS7gCqM=
-      access-expiration: 1800000
-      refresh-expiration: 2592000000
-
-  mailing:
-    activation-url: http://localhost:8080/activateAccount/
-    activation-token-length: 6
-    sender-email: PeachNote
+springdoc:
+  default-produces-media-type: application/json
 
 server:
-  port: ${SERVER_PORT}
   servlet:
     context-path: /api/v1/

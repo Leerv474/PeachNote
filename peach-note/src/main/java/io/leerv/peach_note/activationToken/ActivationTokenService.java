@@ -1,5 +1,7 @@
 package io.leerv.peach_note.activationToken;
 
+import io.leerv.peach_note.exceptions.ExpirationException;
+import io.leerv.peach_note.exceptions.RecordNotFound;
 import io.leerv.peach_note.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,19 +43,23 @@ public class ActivationTokenService {
 
     public User extractUserAndValidateUrl(String url) {
         ActivationToken activationToken = repository.findByUrl(url)
-                .orElseThrow(() -> new IllegalStateException("Activation token not found"));
+                .orElseThrow(() -> new RecordNotFound("Activation token not found"));
         if (!isTokenValid(activationToken)) {
-            throw new IllegalStateException("Activation token expired");
+            throw new ExpirationException("Activation token expired");
         }
+        activationToken.setValidatedAt(LocalDateTime.now());
+        repository.save(activationToken);
         return activationToken.getUser();
     }
 
     public User extractUserAndValidateToken(String token) {
-        ActivationToken activationToken = repository.findByUrl(token)
-                .orElseThrow(() -> new IllegalStateException("Activation token not found"));
+        ActivationToken activationToken = repository.findByToken(token)
+                .orElseThrow(() -> new RecordNotFound("Activation token not found"));
         if (!isTokenValid(activationToken)) {
-            throw new IllegalStateException("Activation token expired");
+            throw new ExpirationException("Activation token expired");
         }
+        activationToken.setValidatedAt(LocalDateTime.now());
+        repository.save(activationToken);
         return activationToken.getUser();
     }
 
