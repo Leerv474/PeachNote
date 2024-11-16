@@ -1,7 +1,6 @@
 package io.leerv.peach_note.statusTable;
 
 import io.leerv.peach_note.board.Board;
-import io.leerv.peach_note.project.Project;
 import io.leerv.peach_note.task.Task;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,9 +25,6 @@ public class StatusTable {
     @JoinColumn(name = "board_id", referencedColumnName = "id")
     private Board board;
 
-    @OneToMany(mappedBy = "statusTable", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "statusTable")
     private List<Task> taskList;
-
-    @OneToMany(mappedBy = "statusTable", cascade = CascadeType.ALL)
-    private List<Project> projectList;
 }

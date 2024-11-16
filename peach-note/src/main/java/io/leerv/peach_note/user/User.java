@@ -2,7 +2,7 @@ package io.leerv.peach_note.user;
 
 import io.leerv.peach_note.activationToken.ActivationToken;
 import io.leerv.peach_note.authorities.Role;
-import io.leerv.peach_note.board.permission.BoardPermission;
+import io.leerv.peach_note.permission.BoardPermission;
 import io.leerv.peach_note.security.RefreshToken;
 import jakarta.persistence.*;
 import lombok.*;

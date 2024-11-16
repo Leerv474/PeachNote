@@ -101,4 +101,22 @@ public class GlobalExceptionHandler {
                             .build()
                 );
     }
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ExceptionDto> handleException(IllegalStateException exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(
+                        ExceptionDto.builder()
+                                .error(exception.getMessage())
+                                .build()
+                );
+    }
+    @ExceptionHandler(IllegalRequestContentException.class)
+    public ResponseEntity<ExceptionDto> handleException(IllegalRequestContentException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(
+                        ExceptionDto.builder()
+                                .error(exception.getMessage())
+                                .build()
+                );
+    }
 }

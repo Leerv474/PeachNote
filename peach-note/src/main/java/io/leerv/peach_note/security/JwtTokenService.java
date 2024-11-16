@@ -32,7 +32,7 @@ public class JwtTokenService {
     private String secret;
 
     public String generateAccessToken(User user) {
-        return buildToken(new HashMap<>(), user, accessTokenExpiration);
+        return String.format("Bearer %s", buildToken(new HashMap<>(), user, accessTokenExpiration));
     }
 
     public String generateRefreshToken(User user) {

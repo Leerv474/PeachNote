@@ -1,6 +1,6 @@
 package io.leerv.peach_note.project;
 
-import io.leerv.peach_note.statusTable.StatusTable;
+import io.leerv.peach_note.board.Board;
 import io.leerv.peach_note.task.Task;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,8 +24,8 @@ public class Project {
     private LocalDate deadline;
 
     @ManyToOne
-    @JoinColumn(name = "status_table_id", referencedColumnName = "id")
-    private StatusTable statusTable;
+    @JoinColumn(name = "board_id", referencedColumnName = "id")
+    private Board board;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Task> taskList;

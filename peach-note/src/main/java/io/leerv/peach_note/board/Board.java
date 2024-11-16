@@ -1,6 +1,7 @@
 package io.leerv.peach_note.board;
 
-import io.leerv.peach_note.board.permission.BoardPermission;
+import io.leerv.peach_note.permission.BoardPermission;
+import io.leerv.peach_note.project.Project;
 import io.leerv.peach_note.statusTable.StatusTable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,4 +26,7 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<StatusTable> statusTableList;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<Project> projectList;
 }
