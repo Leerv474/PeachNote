@@ -1,6 +1,7 @@
 package io.leerv.peach_note.permission;
 
 import io.leerv.peach_note.board.Board;
+import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.exceptions.RecordNotFound;
 import io.leerv.peach_note.user.User;
 import io.leerv.peach_note.user.UserRepository;
@@ -31,6 +32,9 @@ public class BoardPermissionService {
     }
 
     private void grantPermission(User user, Board board, Function<PermissionService, Permission> permissionResolver) {
+        if (repository.userPermissionExists(user.getId(), board.getId())) {
+            throw new IllegalRequestContentException("Permission already exists");
+        }
         BoardPermission boardPermission = BoardPermission.builder()
                 .user(user)
                 .board(board)
@@ -68,5 +72,9 @@ public class BoardPermissionService {
                 .orElseThrow(() -> new RecordNotFound("BoardPermission not found"));
         boardPermission.setPermission(permissionResolver.apply(permissionService));
         repository.save(boardPermission);
+    }
+
+    public void revokePermission(Long userId, Long boardId) {
+        repository.deleteByUserIdAndBoardId(userId, boardId);
     }
 }

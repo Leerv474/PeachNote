@@ -1,8 +1,12 @@
 package io.leerv.peach_note.statusTable;
 
 import io.leerv.peach_note.board.Board;
+import io.leerv.peach_note.exceptions.IllegalRequestContentException;
+import io.leerv.peach_note.exceptions.OperationNotPermittedException;
 import io.leerv.peach_note.exceptions.RecordNotFound;
+import io.leerv.peach_note.permission.BoardPermissionService;
 import io.leerv.peach_note.task.TaskService;
+import io.leerv.peach_note.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class StatusTableService {
     private final StatusTableRepository repository;
+    private final BoardPermissionService boardPermissionService;
     private final TaskService taskService;
 
     public void createStatusTables(Board board, Map<String, Integer> additionalStatusTables) {
@@ -29,16 +34,18 @@ public class StatusTableService {
                         .build()
                 ).toList());
 
-        statusTableList.addAll(
-                additionalStatusTables.entrySet()
-                        .stream()
-                        .map(entry -> StatusTable.builder()
-                                .name(entry.getKey())
-                                .displayOrder(entry.getValue())
-                                .board(board)
-                                .taskList(new ArrayList<>())
-                                .build()).toList()
-        );
+        if (additionalStatusTables != null) {
+            statusTableList.addAll(
+                    additionalStatusTables.entrySet()
+                            .stream()
+                            .map(entry -> StatusTable.builder()
+                                    .name(entry.getKey())
+                                    .displayOrder(entry.getValue())
+                                    .board(board)
+                                    .taskList(new ArrayList<>())
+                                    .build()).toList()
+            );
+        }
         statusTableList.add(
                 StatusTable.builder()
                         .name("Done")
@@ -99,5 +106,20 @@ public class StatusTableService {
     public void deleteAllTables(List<StatusTable> statusTableList) {
         statusTableList.forEach(statusTable -> taskService.deleteAllTasks(statusTable.getTaskList()));
         repository.deleteAll(statusTableList);
+    }
+
+    public void rename(User user, Long tableId, String name) {
+        StatusTable statusTable = repository.findById(tableId)
+                .orElseThrow(() -> new RecordNotFound("Status table not found"));
+        //todo: make proper validation
+
+        if (name.isBlank() || name.isEmpty() || name.length() > 30) {
+            throw new IllegalRequestContentException("Invalid status table name");
+        }
+        if (boardPermissionService.userIsCreator(user.getId(), statusTable.getBoard().getId())) {
+            throw new OperationNotPermittedException("User does not have the rights to edit this status table");
+        }
+        statusTable.setName(name);
+        repository.save(statusTable);
     }
 }

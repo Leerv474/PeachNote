@@ -27,6 +27,16 @@ public class BoardController {
                 );
     }
 
+    @PostMapping("/rename")
+    public ResponseEntity<?> rename(
+            @Valid @RequestBody BoardRenameRequest request,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        service.rename(user, request.getBoardId(), request.getName());
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardDto> findBookById(
             @PathVariable Long boardId,
@@ -48,7 +58,6 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    //TODO: make it according to PeachNote functioning
     @PostMapping("/addUsers")
     public ResponseEntity<?> addUsers(
             @Valid @RequestBody BoardUsersPermissionsRequest request,

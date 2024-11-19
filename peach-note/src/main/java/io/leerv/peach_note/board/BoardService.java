@@ -83,7 +83,7 @@ public class BoardService {
                 throw new IllegalRequestContentException("Invalid permission name");
             }
             if (permissionIsEditor) {
-                boardPermissionService.grantCreatorPermissions(user, board);
+                boardPermissionService.grantEditorPermissions(user, board);
             }
             if (permissionIsViewer) {
                 boardPermissionService.grantViewerPermissions(user, board);
@@ -107,7 +107,10 @@ public class BoardService {
             if (!userRepository.existsById(userId)) {
                 throw new UsernameNotFoundException("User not found");
             }
-            userRepository.deleteById(userId);
+            if (userId.equals(authenticatedUser.getId())) {
+                throw new IllegalRequestContentException("Cannot remove oneself");
+            }
+            boardPermissionService.revokePermission(userId, boardId);
         }
     }
 
@@ -177,5 +180,19 @@ public class BoardService {
             throw new IllegalRequestContentException("Invalid status table list");
         }
         statusTableService.updateStatusTablesOrder(boardId, statusTableMap);
+    }
+
+    public void rename(User authenticatedUser, Long boardId, String name) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new RecordNotFound("Board not found"));
+        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+            throw new OperationNotPermittedException("User does not have the rights to rename this board");
+        }
+        // todo: come up with better validation
+        if (name.isEmpty() || name.isBlank() || name.length() > 30) {
+            throw new IllegalRequestContentException("Invalid name");
+        }
+        board.setName(name);
+        boardRepository.save(board);
     }
 }

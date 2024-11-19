@@ -1,6 +1,7 @@
 package io.leerv.peach_note.permission;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             from BoardPermission br
             where br.user.id = :userId
             and br.board.id = :boardId
+            and br.permission.name = 'CREATOR'
             """)
     boolean userIsCreatorOfBoard(Long userId, Long boardId);
 
@@ -20,6 +22,7 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             from BoardPermission br
             where br.user.id = :userId
             and br.board.id = :boardId
+            and br.permission.name = 'EDITOR'
             """)
     boolean userIsEditorOfBoard(Long userId, Long boardId);
 
@@ -28,6 +31,7 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             from BoardPermission br
             where br.user.id = :userId
             and br.board.id = :boardId
+            and br.permission.name = 'VIEWER'
             """)
     boolean userIsViewerOfBoard(Long userId, Long boardId);
 
@@ -44,5 +48,22 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             where bp.board.id = :boardId
             and bp.user.id = :userId
             """)
-    Optional<BoardPermission> findByBoardIdAndUserId(Long boardId, Long userId);
+    Optional<BoardPermission> findByBoardIdAndUserId(Long userId, Long boardId);
+
+    @Query("""
+            select case when br.permission.permissionLevel > 0 then true else false end
+            from BoardPermission br
+            where br.user.id = :userId
+            and br.board.id = :boardId
+            """)
+    boolean userPermissionExists(Long userId, Long boardId);
+
+    @Modifying
+    @Query("""
+            DELETE
+            FROM BoardPermission br
+            WHERE br.user.id = :userId
+            AND br.board.id = :boardId
+            """)
+    void deleteByUserIdAndBoardId(Long userId, Long boardId);
 }
