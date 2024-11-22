@@ -1,7 +1,7 @@
 package io.leerv.peach_note.auth;
 
-import io.leerv.peach_note.auth.dto.LoginDto;
-import io.leerv.peach_note.auth.dto.RegistrationDto;
+import io.leerv.peach_note.auth.dto.LoginRequest;
+import io.leerv.peach_note.auth.dto.RegistrationRequest;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class AuthenticationController {
 
     //TODO: proper response from the dude on youtube
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegistrationDto request) throws MessagingException {
+    public ResponseEntity<?> register(@Valid @RequestBody RegistrationRequest request) throws MessagingException {
         service.register(request);
         return ResponseEntity.ok().build();
     }
@@ -42,7 +42,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDto request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         Map<String, String> jwtTokens = service.login(request);
         String refreshTokenCookie = String.format(
                 "refresh_token=%s; Max-Age=%s; Path=%s; HttpOnly",

@@ -1,17 +1,42 @@
 package io.leerv.peach_note.task;
 
-import io.leerv.peach_note.task.dto.TaskDto;
+import io.leerv.peach_note.statusTable.StatusTableMapper;
+import io.leerv.peach_note.task.dto.ExpandedTaskDto;
+import io.leerv.peach_note.task.dto.SimpleTaskDto;
+import io.leerv.peach_note.task.dto.TaskItemDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class TaskMapper {
-    public static TaskDto mapToTaskDto(Task task) {
-        return TaskDto.builder()
+    private final TaskUtil taskUtil;
+
+    public SimpleTaskDto mapToSimpleView(Task task) {
+        return SimpleTaskDto.builder()
+                .taskId(task.getId())
                 .title(task.getTitle())
-                .description(task.getDescription())
-                .creationDate(task.getCreationDate())
+                .priority(taskUtil.calculatePriority(task))
+                .build();
+    }
+
+    public ExpandedTaskDto mapToExpandedView(Task task) {
+        return ExpandedTaskDto.builder()
+                .taskId(task.getId())
+                .title(task.getTitle())
                 .deadline(task.getDeadline())
-                .priority(task.getPriority())
-                .projectId(task.getProject() == null ? null : task.getProject().getId())
-                .statusTableId(task.getStatusTable() == null ? null : task.getStatusTable().getId())
+                .priority(taskUtil.calculatePriority(task))
+                .projectId(task.getProject().getId())
+                .projectTitle(task.getProject().getTitle())
+                .build();
+    }
+
+    public TaskItemDto mapToTaskItemDto(Task task) {
+        return TaskItemDto.builder()
+                .taskId(task.getId())
+                .title(task.getTitle())
+                .priority(taskUtil.calculatePriority(task))
+                .statusTable(StatusTableMapper.mapToStatusTableItemDto(task.getStatusTable()))
                 .build();
     }
 }

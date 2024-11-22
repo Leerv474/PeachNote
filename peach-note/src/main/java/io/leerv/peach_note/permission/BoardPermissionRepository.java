@@ -13,7 +13,6 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             from BoardPermission br
             where br.user.id = :userId
             and br.board.id = :boardId
-            and br.permission.name = 'CREATOR'
             """)
     boolean userIsCreatorOfBoard(Long userId, Long boardId);
 
@@ -22,7 +21,6 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             from BoardPermission br
             where br.user.id = :userId
             and br.board.id = :boardId
-            and br.permission.name = 'EDITOR'
             """)
     boolean userIsEditorOfBoard(Long userId, Long boardId);
 
@@ -31,7 +29,6 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             from BoardPermission br
             where br.user.id = :userId
             and br.board.id = :boardId
-            and br.permission.name = 'VIEWER'
             """)
     boolean userIsViewerOfBoard(Long userId, Long boardId);
 

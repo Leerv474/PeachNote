@@ -23,7 +23,6 @@ public class Task {
     private LocalDate creationDate;
     private LocalDate deadline;
     private LocalDate completionDate;
-    private Integer priority;
 
     @ManyToOne
     @JoinColumn(name = "project_id", referencedColumnName = "id")

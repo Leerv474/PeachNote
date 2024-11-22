@@ -14,7 +14,7 @@ public class TaskDto {
     private LocalDate creationDate;
     private LocalDate deadline;
     private LocalDate completionDate;
-    private Integer priority;
+    private Long priority;
     private Long projectId;
     private Long statusTableId;
 }

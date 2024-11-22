@@ -1,15 +1,14 @@
 package io.leerv.peach_note.statusTable;
 
+import io.leerv.peach_note.statusTable.dto.StatusTableFullViewResponse;
 import io.leerv.peach_note.statusTable.dto.StatusTableRenameRequest;
+import io.leerv.peach_note.statusTable.dto.StatusTableSimpleViewResponse;
 import io.leerv.peach_note.user.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,6 +23,28 @@ public class StatusTableController {
     ) {
         User user = (User) authentication.getPrincipal();
         service.rename(user, request.getTableId(), request.getName());
-        ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/simpleView/{tableId}")
+    public ResponseEntity<StatusTableSimpleViewResponse> simpleView(
+            @PathVariable Long tableId,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                service.simpleView(user, tableId)
+        );
+    }
+
+    @GetMapping("/fullView/{tableId}")
+    public ResponseEntity<StatusTableFullViewResponse> fullView(
+            @PathVariable Long tableId,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                service.fullView(user, tableId)
+        );
     }
 }

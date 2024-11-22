@@ -1,11 +1,11 @@
 package io.leerv.peach_note.permission;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class PermissionService {
+public class PermissionUtil {
     private final PermissionRepository repository;
 
     public Permission getCreatorPermission() {

@@ -4,41 +4,38 @@ import io.leerv.peach_note.board.Board;
 import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.exceptions.RecordNotFound;
 import io.leerv.peach_note.user.User;
-import io.leerv.peach_note.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Function;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class BoardPermissionService {
-    private final PermissionService permissionService;
+public class BoardPermissionUtil {
+    private final PermissionUtil permissionUtil;
     private final BoardPermissionRepository repository;
-    private final UserRepository userRepository;
-
 
     public void grantCreatorPermissions(User user, Board board) {
-        grantPermission(user, board, PermissionService::getCreatorPermission);
+        grantPermission(user, board, PermissionUtil::getCreatorPermission);
     }
 
     public void grantEditorPermissions(User user, Board board) {
-        grantPermission(user, board, PermissionService::getEditorPermission);
+        grantPermission(user, board, PermissionUtil::getEditorPermission);
     }
 
     public void grantViewerPermissions(User user, Board board) {
-        grantPermission(user, board, PermissionService::getViewerPermission);
+        grantPermission(user, board, PermissionUtil::getViewerPermission);
     }
 
-    private void grantPermission(User user, Board board, Function<PermissionService, Permission> permissionResolver) {
+    private void grantPermission(User user, Board board, Function<PermissionUtil, Permission> permissionResolver) {
         if (repository.userPermissionExists(user.getId(), board.getId())) {
             throw new IllegalRequestContentException("Permission already exists");
         }
         BoardPermission boardPermission = BoardPermission.builder()
                 .user(user)
                 .board(board)
-                .permission(permissionResolver.apply(permissionService))
+                .permission(permissionResolver.apply(permissionUtil))
                 .build();
         repository.save(boardPermission);
     }
@@ -60,17 +57,17 @@ public class BoardPermissionService {
     }
 
     public void setViewerPermission(Long userId, Long boardId) {
-        setPermission(userId, boardId, PermissionService::getViewerPermission);
+        setPermission(userId, boardId, PermissionUtil::getViewerPermission);
     }
 
     public void setEditorPermission(Long userId, Long boardId) {
-        setPermission(userId, boardId, PermissionService::getEditorPermission);
+        setPermission(userId, boardId, PermissionUtil::getEditorPermission);
     }
 
-    private void setPermission(Long userId, Long boardId, Function<PermissionService, Permission> permissionResolver) {
+    private void setPermission(Long userId, Long boardId, Function<PermissionUtil, Permission> permissionResolver) {
         BoardPermission boardPermission = repository.findByBoardIdAndUserId(userId, boardId)
                 .orElseThrow(() -> new RecordNotFound("BoardPermission not found"));
-        boardPermission.setPermission(permissionResolver.apply(permissionService));
+        boardPermission.setPermission(permissionResolver.apply(permissionUtil));
         repository.save(boardPermission);
     }
 

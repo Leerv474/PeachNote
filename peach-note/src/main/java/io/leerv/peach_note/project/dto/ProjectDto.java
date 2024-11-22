@@ -1,4 +1,4 @@
-package io.leerv.peach_note.task.dto;
+package io.leerv.peach_note.project.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,11 +7,11 @@ import java.time.LocalDate;
 
 @Data
 @Builder
-public class TaskCreateDto {
+public class ProjectDto {
+    private Long projectId;
     private String title;
     private String description;
-    private Integer priority;
     private LocalDate deadline;
-    private Long projectId;
-    private Long boardId;
+    private Integer tasksAmount;
+    private Integer finishedTasks;
 }

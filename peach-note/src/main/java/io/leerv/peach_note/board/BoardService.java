@@ -3,12 +3,13 @@ package io.leerv.peach_note.board;
 import io.leerv.peach_note.board.dto.BoardCreateRequest;
 import io.leerv.peach_note.board.dto.BoardCreateResponse;
 import io.leerv.peach_note.board.dto.BoardDto;
+import io.leerv.peach_note.board.dto.BoardSimpleDto;
 import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.exceptions.OperationNotPermittedException;
 import io.leerv.peach_note.exceptions.RecordNotFound;
-import io.leerv.peach_note.permission.BoardPermissionService;
-import io.leerv.peach_note.project.ProjectService;
-import io.leerv.peach_note.statusTable.StatusTableService;
+import io.leerv.peach_note.permission.BoardPermissionUtil;
+import io.leerv.peach_note.project.ProjectUtil;
+import io.leerv.peach_note.statusTable.StatusTableUtil;
 import io.leerv.peach_note.user.User;
 import io.leerv.peach_note.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -22,42 +23,42 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class BoardService {
-    private final BoardRepository boardRepository;
-    private final BoardPermissionService boardPermissionService;
-    private final StatusTableService statusTableService;
+    private final BoardRepository repository;
+    private final BoardPermissionUtil boardPermissionUtil;
+    private final StatusTableUtil statusTableUtil;
     private final UserRepository userRepository;
-    private final ProjectService projectService;
+    private final ProjectUtil projectUtil;
 
     public BoardCreateResponse create(BoardCreateRequest request, User authenticatedUser) {
         Board board = Board.builder()
                 .name(request.getName())
                 .build();
 
-        boardRepository.save(board);
-        boardPermissionService.grantCreatorPermissions(authenticatedUser, board);
-        statusTableService.createStatusTables(board, request.getAdditionalStatusMap());
+        repository.save(board);
+        boardPermissionUtil.grantCreatorPermissions(authenticatedUser, board);
+        statusTableUtil.createStatusTables(board, request.getAdditionalStatusMap());
 
         return BoardMapper.mapToBoardCreateResponse(board);
     }
 
     public BoardDto find(Long boardId, User authenticatedUser) {
-        Board board = boardRepository.findById(boardId)
+        Board board = repository.findById(boardId)
                 .orElseThrow(() -> new RecordNotFound("Board not found"));
-        if (!boardPermissionService.userHasAccess(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userHasAccess(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to view this board");
         }
         return BoardMapper.mapToBoardDto(board);
     }
 
     public void delete(Long boardId, User authenticatedUser) {
-        Board board = boardRepository.findById(boardId)
+        Board board = repository.findById(boardId)
                 .orElseThrow(() -> new RecordNotFound("Board not found"));
-        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to delete this board");
         }
-        statusTableService.deleteAllTables(board.getStatusTableList());
-        projectService.deleteAllProjects(board.getProjectList());
-        boardRepository.delete(board);
+        statusTableUtil.deleteAllTables(board.getStatusTableList());
+        projectUtil.deleteAllProjects(board.getProjectList());
+        repository.delete(board);
     }
 
     @Transactional(rollbackOn = {
@@ -65,9 +66,9 @@ public class BoardService {
             UsernameNotFoundException.class
     })
     public void addUsers(User authenticatedUser, Long boardId, Map<Long, String> usersPermissions) {
-        Board board = boardRepository.findById(boardId)
+        Board board = repository.findById(boardId)
                 .orElseThrow(() -> new RecordNotFound("Board not found"));
-        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to edit user list");
         }
         if (usersPermissions == null) {
@@ -83,10 +84,10 @@ public class BoardService {
                 throw new IllegalRequestContentException("Invalid permission name");
             }
             if (permissionIsEditor) {
-                boardPermissionService.grantEditorPermissions(user, board);
+                boardPermissionUtil.grantEditorPermissions(user, board);
             }
             if (permissionIsViewer) {
-                boardPermissionService.grantViewerPermissions(user, board);
+                boardPermissionUtil.grantViewerPermissions(user, board);
             }
         }
     }
@@ -95,9 +96,9 @@ public class BoardService {
             UsernameNotFoundException.class
     })
     public void removeUsers(User authenticatedUser, Long boardId, List<Long> userIdList) {
-        Board board = boardRepository.findById(boardId)
+        Board board = repository.findById(boardId)
                 .orElseThrow(() -> new RecordNotFound("Board not found"));
-        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to edit user list");
         }
         if (userIdList == null) {
@@ -110,7 +111,7 @@ public class BoardService {
             if (userId.equals(authenticatedUser.getId())) {
                 throw new IllegalRequestContentException("Cannot remove oneself");
             }
-            boardPermissionService.revokePermission(userId, boardId);
+            boardPermissionUtil.revokePermission(userId, boardId);
         }
     }
 
@@ -119,10 +120,10 @@ public class BoardService {
             RecordNotFound.class
     })
     public void changeUserPermissions(User authenticatedUser, Long boardId, Map<Long, String> usersPermissions) {
-        if (!boardRepository.existsById(boardId)) {
+        if (!repository.existsById(boardId)) {
             throw new RecordNotFound("Board not found");
         }
-        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to edit user list");
         }
         if (usersPermissions == null) {
@@ -136,56 +137,56 @@ public class BoardService {
                 throw new IllegalRequestContentException("Invalid permission name");
             }
             if (permissionIsEditor) {
-                boardPermissionService.setEditorPermission(userId, boardId);
+                boardPermissionUtil.setEditorPermission(userId, boardId);
             }
             if (permissionIsViewer) {
-                boardPermissionService.setViewerPermission(userId, boardId);
+                boardPermissionUtil.setViewerPermission(userId, boardId);
             }
         }
     }
 
     public void addTables(User authenticatedUser, Long boardId, Map<String, Integer> statusTableMap) {
-        Board board = boardRepository.findById(boardId)
+        Board board = repository.findById(boardId)
                 .orElseThrow(() -> new RecordNotFound("Board Not Found"));
-        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to edit status tables list");
         }
         if (statusTableMap == null) {
             throw new IllegalRequestContentException("Invalid status table list");
         }
-        statusTableService.addStatusTables(board, statusTableMap);
+        statusTableUtil.addStatusTables(board, statusTableMap);
     }
 
     public void removeTables(User authenticatedUser, Long boardId, List<Long> removedTablesList) {
-        if (!boardRepository.existsById(boardId)) {
+        if (!repository.existsById(boardId)) {
             throw new RecordNotFound("Board not found");
         }
-        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to edit status tables list");
         }
         if (removedTablesList == null) {
             throw new IllegalRequestContentException("Invalid status table list");
         }
-        statusTableService.removeStatusTables(boardId, removedTablesList);
+        statusTableUtil.removeStatusTables(boardId, removedTablesList);
     }
 
     public void updateTablesOrder(User authenticatedUser, Long boardId, Map<Long, Integer> statusTableMap) {
-        if (!boardRepository.existsById(boardId)) {
+        if (!repository.existsById(boardId)) {
             throw new RecordNotFound("Board not found");
         }
-        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to edit status tables list");
         }
         if (statusTableMap == null) {
             throw new IllegalRequestContentException("Invalid status table list");
         }
-        statusTableService.updateStatusTablesOrder(boardId, statusTableMap);
+        statusTableUtil.updateStatusTablesOrder(boardId, statusTableMap);
     }
 
     public void rename(User authenticatedUser, Long boardId, String name) {
-        Board board = boardRepository.findById(boardId)
+        Board board = repository.findById(boardId)
                 .orElseThrow(() -> new RecordNotFound("Board not found"));
-        if (!boardPermissionService.userIsCreator(authenticatedUser.getId(), boardId)) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to rename this board");
         }
         // todo: come up with better validation
@@ -193,6 +194,11 @@ public class BoardService {
             throw new IllegalRequestContentException("Invalid name");
         }
         board.setName(name);
-        boardRepository.save(board);
+        repository.save(board);
+    }
+
+    public List<BoardSimpleDto> list(User user) {
+        List<Board> boardList = repository.findAllByUserId(user.getId());
+        return boardList.stream().map(BoardMapper::mapToBoardSimpleDto).toList();
     }
 }

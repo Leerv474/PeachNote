@@ -1,8 +1,8 @@
 package io.leerv.peach_note.auth;
 
 import io.leerv.peach_note.activationToken.ActivationTokenService;
-import io.leerv.peach_note.auth.dto.LoginDto;
-import io.leerv.peach_note.auth.dto.RegistrationDto;
+import io.leerv.peach_note.auth.dto.LoginRequest;
+import io.leerv.peach_note.auth.dto.RegistrationRequest;
 import io.leerv.peach_note.auth.email.EmailService;
 import io.leerv.peach_note.authorities.Role;
 import io.leerv.peach_note.authorities.RoleRepository;
@@ -39,7 +39,7 @@ public class AuthenticationService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public void register(RegistrationDto request) throws MessagingException {
+    public void register(RegistrationRequest request) throws MessagingException {
         Role role = roleRepository.findByName("USER")
                 .orElseThrow(() -> new InternalError("Authorities were not initialized"));
         User user = User.builder()
@@ -69,7 +69,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public Map<String, String> login(@Valid LoginDto request) {
+    public Map<String, String> login(@Valid LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

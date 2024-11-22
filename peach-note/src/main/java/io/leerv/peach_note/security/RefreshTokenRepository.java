@@ -19,4 +19,11 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
             where rs.revoked = true
             """)
     List<RefreshToken> findAllRevokedTokens();
+
+    @Query("""
+            select rs
+            from RefreshToken rs
+            where rs.user.id = :userId
+            """)
+    List<RefreshToken> findTokensByUserId(Long userId);
 }

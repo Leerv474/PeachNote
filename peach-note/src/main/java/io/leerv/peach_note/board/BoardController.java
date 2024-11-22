@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("board")
@@ -37,8 +39,18 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{boardId}")
-    public ResponseEntity<BoardDto> findBookById(
+    @GetMapping("/list")
+    public ResponseEntity<List<BoardSimpleDto>> list(
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                service.list(user)
+        );
+    }
+
+    @GetMapping("/view/{boardId}")
+    public ResponseEntity<BoardDto> view(
             @PathVariable Long boardId,
             Authentication authentication
     ) {
@@ -49,7 +61,7 @@ public class BoardController {
     }
 
     @GetMapping("/delete")
-    public ResponseEntity<?> deleteBookById(
+    public ResponseEntity<?> delete(
             @RequestParam Long bookId,
             Authentication authentication
     ) {

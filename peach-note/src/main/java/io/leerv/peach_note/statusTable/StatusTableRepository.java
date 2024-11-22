@@ -22,4 +22,12 @@ public interface StatusTableRepository extends JpaRepository<StatusTable, Long> 
            where st.board.id = :boardId
            """)
     List<StatusTable> findAllByBoardId(Long boardId);
+
+    @Query("""
+            select st
+            from StatusTable st
+            where st.board.id = :boardId
+            and st.displayOrder = :displayOrder
+            """)
+    Optional<StatusTable> findByDisplayOrderAndBoardId(Integer displayOrder, Long boardId);
 }
