@@ -28,6 +28,7 @@ public class BoardService {
     private final StatusTableUtil statusTableUtil;
     private final UserRepository userRepository;
     private final ProjectUtil projectUtil;
+    private final BoardMapper boardMapper;
 
     public BoardCreateResponse create(BoardCreateRequest request, User authenticatedUser) {
         Board board = Board.builder()
@@ -38,7 +39,7 @@ public class BoardService {
         boardPermissionUtil.grantCreatorPermissions(authenticatedUser, board);
         statusTableUtil.createStatusTables(board, request.getAdditionalStatusMap());
 
-        return BoardMapper.mapToBoardCreateResponse(board);
+        return boardMapper.mapToBoardCreateResponse(board);
     }
 
     public BoardDto find(Long boardId, User authenticatedUser) {
@@ -47,7 +48,7 @@ public class BoardService {
         if (!boardPermissionUtil.userHasAccess(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to view this board");
         }
-        return BoardMapper.mapToBoardDto(board);
+        return boardMapper.mapToBoardDto(board);
     }
 
     public void delete(Long boardId, User authenticatedUser) {
@@ -189,16 +190,12 @@ public class BoardService {
         if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), boardId)) {
             throw new OperationNotPermittedException("User does not have the rights to rename this board");
         }
-        // todo: come up with better validation
-        if (name.isEmpty() || name.isBlank() || name.length() > 30) {
-            throw new IllegalRequestContentException("Invalid name");
-        }
         board.setName(name);
         repository.save(board);
     }
 
     public List<BoardSimpleDto> list(User user) {
         List<Board> boardList = repository.findAllByUserId(user.getId());
-        return boardList.stream().map(BoardMapper::mapToBoardSimpleDto).toList();
+        return boardList.stream().map(boardMapper::mapToBoardSimpleDto).toList();
     }
 }

@@ -37,6 +37,10 @@ public class TaskService {
             throw new OperationNotPermittedException("User isn't an editor of the current board");
         }
 
+        if (taskUtil.isUniqueTaskTitle(request.getTitle(), request.getBoardId())) {
+            throw new IllegalRequestContentException("Task must be unique in current board");
+        }
+
         StatusTable statusTable = statusTableUtil.findBucketByBoardId(request.getBoardId());
 
         Project project = null;
@@ -91,7 +95,11 @@ public class TaskService {
         if (!userIsEditor) {
             throw new OperationNotPermittedException("User isn't an editor of the current board");
         }
+
         if (request.getTitle() != null) {
+            if (taskUtil.isUniqueTaskTitle(request.getTitle(), task.getStatusTable().getBoard().getId())) {
+                throw new IllegalRequestContentException("Task must be unique in current board");
+            }
             task.setTitle(request.getTitle());
         }
         if (request.getDeadline() != null) {

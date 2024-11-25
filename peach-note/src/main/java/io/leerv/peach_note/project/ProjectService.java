@@ -30,7 +30,6 @@ public class ProjectService {
             throw new OperationNotPermittedException("User does not have the rights to edit this project");
         }
         Board board = boardUtil.findBoardById(request.getBoardId());
-        // todo: validation
         Project project = Project.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())

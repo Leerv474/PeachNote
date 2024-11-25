@@ -27,9 +27,12 @@ public class TaskUtil {
                 .orElseThrow(() -> new RecordNotFound("Task not found"));
     }
 
-
     public long calculatePriority(Task task) {
         long daysUntilDeadline = ChronoUnit.DAYS.between(task.getCreationDate(), task.getDeadline());
         return daysUntilDeadline > 0 ? daysUntilDeadline : 0;
+    }
+
+    public boolean isUniqueTaskTitle(String title, Long boardId) {
+        return repository.isUniqueTitleInBoard(title, boardId);
     }
 }

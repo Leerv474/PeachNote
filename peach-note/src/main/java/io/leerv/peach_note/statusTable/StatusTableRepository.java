@@ -30,4 +30,12 @@ public interface StatusTableRepository extends JpaRepository<StatusTable, Long> 
             and st.displayOrder = :displayOrder
             """)
     Optional<StatusTable> findByDisplayOrderAndBoardId(Integer displayOrder, Long boardId);
+
+    @Query("""
+            select case when count(st) > 0 then true else false end
+            from StatusTable st
+            where st.name = :name
+            and st.board.id = :boardId
+            """)
+    boolean existsByNameAndBoardId(String name, Long boardId);
 }

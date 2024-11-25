@@ -53,5 +53,9 @@ public class StatusTableService {
             throw new OperationNotPermittedException("User does not have the rights to view this status table");
         }
         List<ExpandedTaskDto> expandedTaskList = statusTable.getTaskList().stream().map(taskMapper::mapToExpandedView).toList();
+        return StatusTableFullViewResponse.builder()
+                .tableId(tableId)
+                .taskList(expandedTaskList)
+                .build();
     }
 }

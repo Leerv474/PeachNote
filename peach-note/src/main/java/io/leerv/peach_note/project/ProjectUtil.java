@@ -40,4 +40,8 @@ public class ProjectUtil {
         }
         return result;
     }
+
+    public boolean isUniqueProjectTitle(String title, Long boardId) {
+        return repository.isUniqueTitleInBoard(title, boardId);
+    }
 }

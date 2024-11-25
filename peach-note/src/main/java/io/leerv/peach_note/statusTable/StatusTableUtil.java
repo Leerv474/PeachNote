@@ -117,4 +117,8 @@ public class StatusTableUtil {
         return repository.findById(statusTableId)
                 .orElseThrow(() -> new RecordNotFound("Status table not found"));
     }
+
+    public boolean isUniqueStatusName(String name, Long boardId) {
+        return repository.existsByNameAndBoardId(name, boardId);
+    }
 }

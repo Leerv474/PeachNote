@@ -1,0 +1,207 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  font-family: "Funnel Display", sans-serif;
+}
+
+.main_card {
+  display: flex;
+  flex-direction: column;
+  min-height: 96vh;
+  height: fit-content;
+  width: 96vw;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  border: 2px solid var(--base);
+  border-radius: 40px;
+  background-color: var(--background-color);
+  align-items: center;
+}
+
+.title_box {
+  display: flex;
+  align-items: center;
+  margin: 30px;
+}
+
+.title_box h1 img {
+  position: relative;
+  height: 60px;
+  margin-left: -3px;
+  margin-right: -28px;
+  z-index: 2;
+}
+
+.title_box h1 {
+  font-family: "Lilita One", sans-serif;
+  color: var(--secondary-color);
+  font-size: 65pt;
+  padding-top: 20px;
+  z-index: 1;
+}
+
+.card_container {
+  display: grid;
+  grid-template-columns: repeat(1fr, 3);
+  grid-template-rows: auto;
+  margin: 0 10vw;
+  margin-bottom: 10vh;
+  gap: 40px;
+  height: fit-content;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 30px;
+  background-color: var(--primary-color30);
+  margin: 2vh 0;
+  padding: 1vh 2vw;
+}
+
+.card h1 {
+  font-family: "Lilita One", sans-serif;
+  color: var(--text-color);
+  text-align: center;
+  margin: 20px;
+}
+
+.card p {
+  font-size: 20pt;
+  text-align: justify;
+}
+
+.card p li {
+  margin-left: 20pt;
+  margin-top: 3pt;
+  margin-bottom: 3pt;
+}
+
+.start_card {
+  grid-column: 3;
+  grid-row: 2;
+  background-color: var(--primary-color60);
+}
+
+.slogan_card {
+  grid-row: 1 / span 2;
+  grid-column: 1 / span 2;
+}
+
+.slogan_card h1 {
+  text-align: justify;
+  padding-left: 20px;
+  font-size: 40pt;
+}
+
+.slogan_card p {
+  padding-left: 40px;
+  font-family: "Leckerli One", cursive;
+}
+
+.about_card {
+  grid-column: 1 / span 3;
+}
+
+.features {
+  grid-column: 1 / span 3;
+  background-color: var(--primary-color40);
+  padding-left: 50px;
+  display: flex;
+  flex-direction: row;
+}
+
+.features_slogan h1 {
+  text-align: left;
+}
+
+.features_slogan p {
+  text-align: left;
+  font-size: 20pt;
+  padding-right: 40px;
+}
+
+.features_list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-left: auto;
+}
+
+.features_list li {
+  text-align: justify;
+  font-size: 16pt;
+  list-style: none;
+  margin: 10px 0;
+}
+
+.features_list li b {
+  color: var(--accent-3);
+}
+
+.card .btn_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 20px 30px;
+  height: 100%;
+}
+
+/*TODO: remove buttons*/
+.card .btn_container .button_tmp {
+  font-size: 20pt;
+  border: 2px solid var(--base);
+  border-radius: 20px;
+  padding: 10px 20px;
+  width: 200px;
+  text-align: center;
+  background-color: var(--secondary-color);
+}
+
+.meta {
+  grid-column: span 3;
+  background-color: var(--background-color110);
+}
+
+.meta h2 {
+  margin-bottom: 10px;
+}
+
+.meta div {
+  border-bottom: 1px solid gray;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  padding-left: 5%;
+}
+
+.meta div li {
+  list-style: none;
+  padding: 5px 10px;
+}
+
+.meta div p {
+  font-size: 20pt;
+  margin: 5px;
+}
+
+.meta p {
+  font-size: 14pt;
+  margin: 5px;
+  padding-left: 5%;
+}
+
+.meta h5 {
+  margin: 5px;
+  padding-left: 5%;
+}

@@ -45,6 +45,9 @@ application:
   file:
     upload:
       photos-output-path: ./uploads
+  frontend:
+    allowed-origins:
+      - http://localhost:3000
 
 server:
   port: 8088

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class ProjectMapper {
     private final ProjectUtil projectUtil;
 
-    public static ProjectItemDto mapToProjectItemDto(Project project) {
+    public ProjectItemDto mapToProjectItemDto(Project project) {
         return ProjectItemDto.builder()
                 .projectId(project.getId())
                 .title(project.getTitle())
@@ -17,6 +17,4 @@ public class ProjectMapper {
                 .finishedTasksAmount(projectUtil.countFinishedTasks(project))
                 .build();
     }
-
-    public Project
 }
