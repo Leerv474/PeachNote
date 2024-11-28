@@ -1,0 +1,38 @@
+.board_item {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  margin: 5px;
+  display: flex;
+  flex-direction: row-reverse;
+  height: 35px;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  border: 1px solid var(--base);
+}
+
+.board_item:hover {
+  transform: scale(1.02);
+  transform: translateX(5px);
+  box-shadow: -3px 0px 3px var(--secondary-color70);
+}
+
+.board_item .board_button {
+  font-size: 25px;
+  color: var(--text-dark70);
+  width: 100%;
+  padding: 0 10px 3px 10px; 
+  text-align: left;
+}
+
+.board_item .board_options_button {
+  padding: 5px;
+  width: max-content;
+  height: 100%;
+  color: var(--secondary-color110);
+  transition: transform 0.3s ease;
+}
+
+.board_item .board_options_button:hover {
+  transform: rotate(90deg)
+}

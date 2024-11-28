@@ -1,0 +1,19 @@
+.auth_button {
+  font-size: 20pt;
+  border-radius: 20px;
+  padding: 10px 20px 15px 20px;
+  width: 200px;
+  text-align: center;
+  background-color: var(--secondary-color);
+  color: var(--text-dark10);
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.auth_button:hover {
+  transform: translateX(5px);
+  box-shadow: -7px 7px 15px var(--secondary-color70);
+}

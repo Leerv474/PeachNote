@@ -1,0 +1,27 @@
+.task_item {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  width: calc(100% - 10px);
+  margin: 3px 5px;
+  border: 1px solid var(--base);
+  border-radius: 15px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task_item p {
+  font-size: 14pt;
+  padding: 0 10px 3px 10px;
+}
+
+.task_item:hover {
+  transform: scale(1.01);
+}
+
+.next_status_button {
+  background: gray;
+  height: 100%;
+  border-radius: 15px;
+  width: 40px;
+}

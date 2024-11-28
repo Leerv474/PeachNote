@@ -9,15 +9,75 @@
   --primary-color20: #fff5e7;
   --primary-color10: #fff8ed;
 
+  --secondary-color110: #d67351;
   --secondary-color: #f4835d;
-  --accent-1: #88bb40;
-  --accent-2: #c94249;
-  --accent-3: #3c89fd;
+  --secondary-color80: #f59371;
+  --secondary-color70: #f7a285;
+  --secondary-color60: #f8b29a;
+  --secondary-color50: #fac1ae;
+  --secondary-color40: #fbd1c2;
+  --secondary-color30: #fce0d6;
+  --secondary-color20: #fef0eb;
+
+  --accent-orange: #ff6c4d;
+
+  --accent-green180: #111708;
+  --accent-green170: #222f10;
+  --accent-green160: #334618;
+  --accent-green150: #445d20;
+  --accent-green140: #557528;
+  --accent-green130: #668c30;
+  --accent-green120: #77a438;
+  --accent-green: #88bb40;
+  --accent-green90: #97c358;
+  --accent-green80: #a6cc70;
+  --accent-green70: #b5d488;
+  --accent-green60: #c4dda0;
+  --accent-green50: #d2e5b7;
+  --accent-green40: #e1eecf;
+  --accent-green30: #f0f6e7;
+
+  --accent-red: #c94249;
+  --accent-red90: #c94249;
+  --accent-red80: #d05a60;
+  --accent-red70: #d77177;
+  --accent-red60: #dd898d;
+  --accent-red50: #e4a1a4;
+  --accent-red40: #ebb8bb;
+  --accent-red30: #f2d0d2;
+  --accent-red20: #f8e7e8;
+
+  --accent-blue: #3c89fd;
+  --accent-blue90: #3c89f0;
+  --accent-blue80: #5498f2;
+  --accent-blue70: #6da7f4;
+  --accent-blue60: #85b5f6;
+  --accent-blue50: #9dc4f7;
+  --accent-blue40: #b6d3f9;
+  --accent-blue30: #cee2fb;
+  --accent-blue20: #e7f0fd;
+
   --background-color: #fff5e7;
   --background-color110: #efe6da;
   --background-color120: #dfd8cd;
   --background-color130: #cfc9c0;
   --background-color140: #bfbab3;
-  --text-color: #201607;
+
+  --text-dark: #201607;
+  --text-dark80: #201607;
+  --text-dark70: #3c3326;
+  --text-dark60: #585045;
+  --text-dark50: #746d64;
+  --text-dark40: #908b83;
+  --text-dark30: #aba8a2;
+  --text-dark20: #c7c5c1;
+  --text-dark10: #e3e2e0;
+
+  --text-light: #fff5e7;
+  --text-light110: #efe6da;
+  --text-light120: #dfd8cd;
+  --text-light130: #cfc9c0;
+  --text-light140: #bfbab3;
+
   --base: #071120;
 }

@@ -1,0 +1,16 @@
+.action_button {
+  font-size: 20pt;
+  border-radius: 10px;
+  width: fit-content;
+  padding: 1px 15px 3px 15px;
+  text-align: center;
+  background-color: var(--secondary-color);
+  color: var(--text-dark10);
+  font-weight: bold;
+  transition: border-block-end 0.3s ease;
+  cursor: pointer;
+}
+
+.action_button:hover {
+  border-block-end: 3px solid var(--accent-blue);
+}

@@ -1,0 +1,61 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  height: calc(100% - 65px);
+  background-color: var(--secondary-color40);
+  width: 350px;
+  margin: 10px 0 5px 5px;
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
+  left: -355px;
+  transition: left 0.3s ease;
+}
+
+.reveal {
+  left: 0;
+}
+
+.board_list_container {
+  display: flex;
+  flex-direction: column;
+  direction: rtl; 
+  overflow-y: scroll;
+  height: 100%;
+  width: calc(100% - 45px);
+  margin: 25px 20px 0px 20px;
+  padding-left: 5px;
+}
+
+.board_list_container {
+  overflow-y: scroll;
+  scrollbar-width: thin; /* Options: auto, thin, none */
+  scrollbar-color: var(--secondary-color) rgba(0, 0, 0, 0);
+}
+/*TODO: figure out for chromium based browsers*/
+/*.board_list_container::-webkit-scrollbar {*/
+/*  width: 12px; /* Width of the scrollbar */
+/*}*/
+/**/
+/*.board_list_container::-webkit-scrollbar-thumb {*/
+/*  background-color: var(--secondary-color); /* Color of the scrollbar thumb */
+/*  border-radius: 6px; /* Rounded corners */
+/*  border: 3px solid transparent; /* Add padding around the thumb */
+/*  background-clip: content-box; /* Prevent the border from covering the thumb */
+/*}*/
+/**/
+/*.board_list_container::-webkit-scrollbar-track {*/
+/*  background-color: #f1f1f1; /* Color of the scrollbar track */
+/*}*/
+
+.create_button_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  width: 100%;
+}
+.create_board_pos {
+  width: 80%;
+}
