@@ -2,11 +2,12 @@
   height: fit-content;
   max-height: 100%;
   width: 320px;
-  background-color: var(--accent-green70);
+  background-color: var(--accent-blue50);
   transition: transform 0.2s ease;
   display: flex;
   flex-direction: column;
   border-radius: 15px;
+  flex-shrink: 0;
 }
 
 .table_container:hover {

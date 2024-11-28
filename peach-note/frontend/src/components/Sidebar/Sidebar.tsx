@@ -28,17 +28,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div
         className={classNames(style.sidebar, { [style.reveal]: sidebarOpen })}
       >
-        <div className={style.board_list_container}>
-          {testNames.map((name) => (
-            <BoardItem name={name} boardId={1} />
-          ))}
+        <div
+          className={classNames(style.board_list_bar, {
+            [style.reveal]: sidebarOpen,
+          })}
+        >
+          <p>boards</p>
         </div>
-        <div className={style.create_button_container}>
-          <ActionButton
-            className={style.create_board_pos}
-            onClick={handleCreateBoard}
-            label="create"
-          />
+        <div className={classNames(style.content_container)}>
+          <div className={style.board_list_container}>
+            {testNames.map((name) => (
+              <BoardItem name={name} boardId={1} />
+            ))}
+          </div>
+          <div className={style.create_button_container}>
+            <ActionButton
+              classname={style.create_board_pos}
+              onClick={handleCreateBoard}
+              label="create"
+            />
+          </div>
         </div>
       </div>
     </>

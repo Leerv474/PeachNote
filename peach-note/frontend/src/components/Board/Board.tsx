@@ -18,11 +18,21 @@ export const Board: React.FC<BoardProps> = ({ sidebarOpen }) => {
           <div className={classNames(style.tables_container)}>
             <div className={classNames(style.scroll_container)}>
               <Table title={"Done"} />
+              <Table title={"Done"} />
+              <Table title={"Done"} />
+              <Table title={"Done"} />
+              <Table title={"Done"} />
+              <Table title={"Done"} />
+              <Table title={"Done"} />
+              <Table title={"Done"} />
+              <Table title={"Done"} />
             </div>
           </div>
           <div className={classNames(style.bottom_bar)}>
             <div className={classNames(style.bottom_container)}>
-              <ActionButton label="new task" onClick={() => {}} />
+              <div className={classNames(style.create_task_container)}>
+                <ActionButton classname={classNames(style.create_task_button)}label="new task" onClick={() => {}} />
+              </div>
               <ProjectList />
             </div>
           </div>

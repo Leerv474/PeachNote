@@ -6,7 +6,7 @@
   flex-direction: row;
   margin: 10px 5px 5px 5px;
   border-radius: 20px;
-  border: 2px solid var(--base);
+  /*border: 2px solid var(--base);*/
   padding: 10px;
   position: absolute;
   right: 0;
@@ -14,7 +14,7 @@
 }
 
 .squeeze {
-  width: calc(100% - 365px);
+  width: calc(100% - 345px);
 }
 
 .relative_box {
@@ -27,12 +27,22 @@
 
 .tables_container {
   height: 100%;
-  overflow-x: scroll;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.scroll_container {
+  height: 100%;
+  gap: 20px;
   display: flex;
+  flex-wrap: nowrap;
   flex-direction: row;
-  margin: 0;
   padding: 10px;
-  overflow-y: scroll;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scrollbar-width: none; /* Firefox: set a thinner scrollbar */
+  box-shadow: inset -10px 0 10px -10px rgba(0, 0, 0, 0.1);
 }
 
 .bottom_bar {
@@ -40,6 +50,7 @@
   flex-direction: row;
   justify-content: right;
   width: 100%;
+  height: 50px;
   position: absolute;
   bottom: 0;
 }
@@ -48,4 +59,17 @@
   display: flex;
   position: relative;
   flex-direction: row-reverse;
+  height: 100%;
+  align-items: flex-end;
+}
+
+.create_task_container {
+  height: 45px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.create_task_button {
+  padding-bottom: 8px;
+  padding-top: 3px;
 }

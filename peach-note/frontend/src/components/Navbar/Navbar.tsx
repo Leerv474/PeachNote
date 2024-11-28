@@ -19,13 +19,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <div className={classNames(style.navbar)}>
-        <div
-          className={classNames(style.board_list_bar, {
-            [style.reveal]: sidebarOpen,
-          })}
-        >
-          <p>boards</p>
-        </div>
         <div className={classNames(style.board_title)}>
           <h2>{boardTitle}</h2>
         </div>
@@ -55,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </h1>
           </div>
           <ActionButton
-            className={style.profile_button_pos}
+            classname={style.profile_button_pos}
             label={username}
             onClick={handleProfileRedirect}
           />

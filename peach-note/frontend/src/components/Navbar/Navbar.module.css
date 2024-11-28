@@ -43,33 +43,12 @@
   position: relative;
 }
 
-.board_list_bar {
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--secondary-color);
-  border-radius: 15px;
-  margin: 5px 0 5px 5px;
-  width: 350px;
-  height: 100%;
-  left: -355px;
-  transition: left 0.3s ease;
-}
-
 .reveal {
   left: 0;
 }
 
 .squeeze {
-  width: calc(100% - 365px);
-}
-
-.board_list_bar p {
-  font-size: 22pt;
-  font-weight: bold;
-  color: var(--text-light);
-  text-align: center;
+  width: calc(100% - 345px);
 }
 
 .sidebar_button {
