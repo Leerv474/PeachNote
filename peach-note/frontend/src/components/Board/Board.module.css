@@ -41,8 +41,11 @@
   padding: 10px;
   overflow-x: scroll;
   overflow-y: hidden;
-  scrollbar-width: none; /* Firefox: set a thinner scrollbar */
+  scrollbar-width: thin; /* Firefox: set a thinner scrollbar */
   box-shadow: inset -10px 0 10px -10px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+  scroll-snap-type: x mandatory;
+  user-select: none;
 }
 
 .bottom_bar {
@@ -67,6 +70,7 @@
   height: 45px;
   display: flex;
   align-items: flex-end;
+  scroll-snap-align: start;
 }
 
 .create_task_button {

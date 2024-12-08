@@ -32,7 +32,7 @@
   cursor: pointer;
   transition:
     border-bottom 0.2s ease,
-    margin-bottom 0.2s ease;
+    margin 0.2s ease;
   position: relative;
   border-bottom: none;
 }
@@ -48,10 +48,10 @@
 
 .expand_button_expanded {
   border-bottom: 2px solid var(--text-light);
-  transform: translateY(2px);
 }
 .expand_button_expanded:hover {
   border-bottom: none;
+  margin-top: -2px;
 }
 
 .list_container {
@@ -59,7 +59,7 @@
   flex-direction: column;
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.7s ease;
+  transition: max-height 0.5s ease;
 }
 
 .list_expanded {
@@ -67,7 +67,12 @@
 }
 
 .scroll_container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin: 5px 5px 15px 5px;
+  overflow-y: scroll;
+  scrollbar-width: thin; /* Options: auto, thin, none */
 }
 
 .arrow {

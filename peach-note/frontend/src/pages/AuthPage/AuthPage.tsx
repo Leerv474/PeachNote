@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import style from "./AuthPage.module.css";
 import classNames from "classnames";
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
+import { TiArrowSortedUp } from "react-icons/ti";
 import { SignUpForm } from "../../components/SignUpForm/SignUpForm";
 import { SignInForm } from "../../components/SignInForm/SignInForm";
 import { useLocation } from "react-router-dom";
@@ -12,14 +12,25 @@ export const AuthPage: React.FC = () => {
   const [isSighIn, setSignIn] = useState(
     state === null ? true : state.isSignIn,
   );
-
+  const [peachFalls, setPeachFalls] = useState(false);
   return (
     <>
       <div className={classNames(style.main_card)}>
         <div className={style.title_box}>
           <h1>
             PeachN
-            <img src="./peachnote-icon.png" alt="PEACH" />
+            <img
+              src="./peachnote-icon.png"
+              alt="PEACH"
+              className={classNames(
+                { [style.wobble]: !peachFalls },
+                { [style.peach_falls]: peachFalls },
+              )}
+              onClick={() => {
+                setPeachFalls(true);
+                setTimeout(() => setPeachFalls(false), 2000);
+              }}
+            />
             te
           </h1>
         </div>
@@ -29,7 +40,7 @@ export const AuthPage: React.FC = () => {
               className={classNames(style.signup_button)}
               onClick={() => setSignIn(false)}
             >
-              <AiOutlineArrowLeft />
+              <TiArrowSortedUp className={classNames(style.arrow_left)} />
               <p>sign up</p>
             </div>
           ) : null}
@@ -44,11 +55,11 @@ export const AuthPage: React.FC = () => {
               onClick={() => setSignIn(true)}
             >
               <p>sign in</p>
-              <AiOutlineArrowRight />
+              <TiArrowSortedUp className={classNames(style.arrow_right)} />
             </div>
           ) : null}
         </div>
-        {isSighIn ? <SignInForm /> : <SignUpForm setSignIn={setSignIn}/>}
+        {isSighIn ? <SignInForm /> : <SignUpForm setSignIn={setSignIn} />}
       </div>
     </>
   );

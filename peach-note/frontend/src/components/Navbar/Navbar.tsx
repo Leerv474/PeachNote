@@ -16,6 +16,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleProfileRedirect = () => {
     navigate("/profile");
   };
+  const [peachFalls, setPeachFalls] = useState(false);
   return (
     <>
       <div className={classNames(style.navbar)}>
@@ -43,7 +44,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className={style.title_box}>
             <h1>
               PeachN
-              <img src="./peachnote-icon.png" alt="PEACH" />
+              <img
+                src="./peachnote-icon.png"
+                alt="PEACH"
+                className={classNames(
+                  { [style.peach_falls]: peachFalls },
+                  { [style.wobble]: !peachFalls },
+                )}
+                onClick={() => {
+                  setPeachFalls(true);
+                  setTimeout(() => setPeachFalls(false), 2000);
+                }}
+              />
               te
             </h1>
           </div>

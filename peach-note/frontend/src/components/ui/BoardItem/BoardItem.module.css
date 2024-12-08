@@ -1,5 +1,5 @@
 .board_item {
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color50);
   border-radius: 10px;
   margin: 5px;
   display: flex;
@@ -8,31 +8,42 @@
   align-items: center;
   cursor: pointer;
   transition: transform 0.2s ease;
-  border-bottom: 1px solid var(--base);
+  /*border-bottom: 1px solid var(--base);*/
+  position: relative;
+  user-select: none;
 }
 
 .board_item:hover {
-  transform: scale(1.02);
-  transform: translateX(5px);
+  transform: scale(1.02) translateX(5px);
   box-shadow: -3px 0px 3px var(--secondary-color70);
 }
 
-.board_item .board_button {
+.board_item:active {
+  transform: scale(1.01);
+}
+
+.board_item p {
   font-size: 25px;
-  color: var(--text-dark70);
+  color: var(--text-dark60);
   width: 100%;
-  padding: 0 10px 3px 10px; 
+  padding: 0 10px 3px 10px;
   text-align: left;
 }
 
-.board_item .board_options_button {
+.board_options_button {
   padding: 5px;
   width: max-content;
   height: 100%;
   color: var(--secondary-color110);
   transition: transform 0.3s ease;
+  position: absolute;
+  right: 0;
 }
 
-.board_item .board_options_button:hover {
-  transform: rotate(90deg)
+.board_options_button:hover {
+  transform: rotate(90deg);
+}
+
+.board_options_button:active {
+  transform: rotate(360deg);
 }

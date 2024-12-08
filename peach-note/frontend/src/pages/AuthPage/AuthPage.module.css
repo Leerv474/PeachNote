@@ -22,7 +22,7 @@
   }
 }
 
-@keyframes fadeIn{
+@keyframes fadeIn {
   to {
     opacity: 1;
     transform: translateX(0); /* End at original position */
@@ -59,7 +59,78 @@
   transition: transform 0.3s ease;
 }
 
-.title_box h1 img:hover {
+@keyframes fall {
+  0% {
+    transform: translate(0, 0);
+  }
+  2% {
+    transform: translate(15px, -51px) rotate(10deg);
+  }
+  4% {
+    transform: translate(30px, -84px) rotate(-10deg);
+  }
+  6% {
+    transform: translate(40px, -96px) rotate(0deg);
+  }
+  8% {
+    transform: translate(50px, -100px) rotate(5deg);
+  }
+  10% {
+    transform: translate(60px, -96px) rotate(10deg);
+  }
+  14% {
+    transform: translate(70px, -84px) rotate(5deg);
+  }
+  17% {
+    transform: translate(85px, -51px) rotate(0);
+  }
+  20% {
+    transform: translate(100px, 0px) rotate(-10deg);
+    opacity: 0.99;
+  }
+  30% {
+    transform: translate(300px, 1400px) rotate(20deg);
+    opacity: 0;
+    scale: 0.99;
+  }
+  50% {
+    transform: translate(400px, 5000px) rotate(-40deg);
+  }
+  60% {
+    transform: translate(500px, 8000px);
+  }
+  70% {
+    opacity: 0;
+    scale: 0;
+    transform: translate(0) rotate(0);
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+  80% {
+    transform: rotate(10deg);
+  }
+  85% {
+    transform: rotate(-6deg);
+  }
+  90% {
+    transform: rotate(6deg);
+  }
+  95% {
+    transform: rotate(-3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    transform: rotate(0deg);
+  }
+}
+.peach_falls {
+  animation: fall 2s linear forwards;
+}
+
+.title_box h1 .wobble:hover {
   animation: wobble 1.2s ease-in-out infinite;
 }
 
@@ -71,7 +142,6 @@
   z-index: 1;
   cursor: default;
 }
-
 
 .option_bar {
   display: flex;
@@ -95,23 +165,18 @@
 .option_bar .title {
   transform: translateX(-50px); /* Start off-screen to the left */
   animation: fadeIn 0.5s ease forwards; /* 'forwards' keeps final state */
-  color: var(--text-light)
+  color: var(--text-light);
 }
 
-
-.option_bar .signin_button,
-.option_bar .signup_button {
+.signin_button,
+.signup_button {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--text-dark60);
+  color: var(--text-dark50);
   cursor: pointer;
   padding: 10px 5px;
-  border-radius: 20px;
-  background-color: var(--secondary-color70);
-  transition:
-    color 0.3s ease,
-    background 1s ease;
+  border-radius: 0 15px 15px 0;
   z-index: 2;
   opacity: 0;
 }
@@ -133,22 +198,35 @@
   font-family: "Funnel Display", sans-serif;
   padding-bottom: 3px;
   position: static;
+  transition:
+    color 0.3s ease,
+    margin 0.3s ease;
 }
 
-.option_bar .signin_button:hover {
-  color: var(--text-dark80);
-  background: linear-gradient(
-    to left,
-    var(--secondary-color50),
-    var(--secondary-color70)
-  );
+.signin_button:hover p,
+.signin_button:hover .arrow_right {
+  color: var(--text-light);
+  margin-right: -5px;
 }
 
-.option_bar .signup_button:hover {
-  color: var(--text-dark80);
-  background: linear-gradient(
-    to right,
-    var(--secondary-color50),
-    var(--secondary-color70)
-  );
+.signup_button:hover p,
+.signup_button:hover .arrow_left {
+  color: var(--text-light);
+  margin-left: -5px;
+}
+
+.arrow_left {
+  transform: rotate(-90deg);
+  font-size: 20px;
+  transition:
+    color 0.3s ease,
+    margin 0.3s ease;
+}
+
+.arrow_right {
+  transform: rotate(90deg);
+  font-size: 20px;
+  transition:
+    color 0.3s ease,
+    margin 0.3s ease;
 }

@@ -8,9 +8,12 @@ import { BoardItem } from "../ui/BoardItem/BoardItem";
 export const Sidebar: React.FC<SidebarProps> = ({
   boardNameList,
   boardMap,
+  setShowCreateBoard,
+  setBoardId,
   sidebarOpen,
+  openBoardSettingsWindow
 }) => {
-  const handleCreateBoard = () => {};
+  const handleCreateBoard = () => {setShowCreateBoard(true)};
   const testNames = [
     "test",
     "test",
@@ -38,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className={classNames(style.content_container)}>
           <div className={style.board_list_container}>
             {testNames.map((name) => (
-              <BoardItem name={name} boardId={1} />
+              <BoardItem name={name} boardId={1} setBoardId={setBoardId} openBoardSettingsWindow={openBoardSettingsWindow}/>
             ))}
           </div>
           <div className={style.create_button_container}>

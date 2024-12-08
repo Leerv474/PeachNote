@@ -1,5 +1,5 @@
 import style from "./WelcomePage.module.css";
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import { AuthButton } from "../../components/ui/AuthButton/AuthButton";
 import { useNavigate } from "react-router-dom";
@@ -9,13 +9,25 @@ export const WelcomePage: React.FC = () => {
   const handleRedirect = (isSignIn: boolean) => {
     navigate("/auth", { state: { isSignIn: isSignIn } });
   };
+  const [peachFalls, setPeachFalls] = useState(false);
   return (
     <>
       <div className={style.main_card}>
         <div className={style.title_box}>
           <h1>
             PeachN
-            <img src="./peachnote-icon.png" alt="PEACH" />
+            <img
+              src="./peachnote-icon.png"
+              alt="PEACH"
+              className={classNames(
+                { [style.wobble]: !peachFalls },
+                { [style.peach_falls]: peachFalls },
+              )}
+              onClick={() => {
+                setPeachFalls(true);
+                setTimeout(() => setPeachFalls(false), 2000);
+              }}
+            />
             te
           </h1>
         </div>

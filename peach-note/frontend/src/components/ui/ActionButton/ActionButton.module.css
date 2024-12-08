@@ -9,8 +9,13 @@
   font-weight: bold;
   transition: border-block-end 0.3s ease;
   cursor: pointer;
+  user-select: none;
 }
 
 .action_button:hover {
   border-block-end: 3px solid var(--accent-blue);
+}
+
+.action_button:active {
+  border-block-end: 0px;
 }

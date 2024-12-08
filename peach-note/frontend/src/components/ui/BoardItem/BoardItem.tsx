@@ -4,23 +4,27 @@ import classNames from "classnames";
 import { RiSettings3Fill } from "react-icons/ri";
 import BoardItemProps from "./props/BoardItemProps";
 
-export const BoardItem: React.FC<BoardItemProps> = ({ name, boardId }) => {
+export const BoardItem: React.FC<BoardItemProps> = ({
+  name,
+  boardId,
+  setBoardId,
+  openBoardSettingsWindow
+}) => {
   //TODO: pass useState through props
-  const setBoard = (id: number) => {};
-  const setOpenBoardOptions = (open: boolean) => {};
   return (
     <>
-      <div className={classNames(style.board_item)}>
-        <div
-          className={classNames(style.board_button)}
-          onClick={() => {
-            setBoard(boardId);
-          }}
-        >
-          {name}
-        </div>
+      <div
+        className={classNames(style.board_item)}
+        onClick={() => {
+          setBoardId(boardId);
+        }}
+      >
+        <p>{name}</p>
         <RiSettings3Fill
-          onClick={() => setOpenBoardOptions(true)}
+          onClick={(e) => {
+            e.stopPropagation();
+            openBoardSettingsWindow(boardId);
+          }}
           className={classNames(style.board_options_button)}
         />
       </div>

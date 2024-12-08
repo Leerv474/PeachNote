@@ -1,10 +1,53 @@
 import React, { useState } from "react";
 import style from "./ProjectList.module.css";
 import classNames from "classnames";
-import { TiArrowSortedUp, TiArrowSortedDown } from "react-icons/ti";
+import { TiArrowSortedUp } from "react-icons/ti";
+import { ProjectItem } from "../ProjectItem/ProjectItem";
+import ProjectListProps from "./props/ProjectListProps";
 
-export const ProjectList: React.FC = () => {
-  const [listExpanded, setListExpanded] = useState(true);
+export const ProjectList: React.FC<ProjectListProps> = ({
+  openProjectWindow,
+}) => {
+  const [listExpanded, setListExpanded] = useState(false);
+  // TODO: replce with actual data
+  const projects = [
+    {
+      title: "PROJECT",
+      projectId: 1,
+      tasksAmount: 20,
+      tasksCompleted: 16,
+    },
+    {
+      title: "PROJECT",
+      projectId: 2,
+      tasksAmount: 20,
+      tasksCompleted: 1,
+    },
+    {
+      title: "PROJECT",
+      projectId: 3,
+      tasksAmount: 20,
+      tasksCompleted: 12,
+    },
+    {
+      title: "PROJECT",
+      projectId: 4,
+      tasksAmount: 20,
+      tasksCompleted: 17,
+    },
+    {
+      title: "PROJECT",
+      projectId: 1,
+      tasksAmount: 20,
+      tasksCompleted: 17,
+    },
+    {
+      title: "PROJECT",
+      projectId: 1,
+      tasksAmount: 20,
+      tasksCompleted: 17,
+    },
+  ];
   return (
     <>
       <div
@@ -39,12 +82,20 @@ export const ProjectList: React.FC = () => {
           })}
         >
           <div className={classNames(style.scroll_container)}>
-            <p>project</p>
-            <p>project</p>
-            <p>project</p>
-            <p>project</p>
-            <p>project</p>
-            <p>project</p>
+            {projects.map(
+              ({ title, projectId, tasksAmount, tasksCompleted }) => {
+                return (
+                  <ProjectItem
+                    key={projectId}
+                    projectId={projectId}
+                    title={title}
+                    tasksAmount={tasksAmount}
+                    tasksCompleted={tasksCompleted}
+                    openProjectWindow={openProjectWindow}
+                  />
+                );
+              },
+            )}
           </div>
         </div>
       </div>

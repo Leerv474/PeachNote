@@ -59,7 +59,79 @@
   transition: transform 0.3s ease;
 }
 
-.title_box h1 img:hover {
+
+@keyframes fall {
+  0% {
+    transform: translate(0, 0);
+  }
+  2% {
+    transform: translate(15px, -51px) rotate(20deg);
+  }
+  4% {
+    transform: translate(30px, -84px) rotate(-20deg);
+  }
+  6% {
+    transform: translate(40px, -96px) rotate(0deg);
+  }
+  8% {
+    transform: translate(50px, -100px) rotate(10deg);
+  }
+  10% {
+    transform: translate(60px, -96px) rotate(20deg);
+  }
+  14% {
+    transform: translate(70px, -84px) rotate(10deg);
+  }
+  17% {
+    transform: translate(85px, -51px) rotate(0);
+  }
+  20% {
+    transform: translate(100px, 0px) rotate(-20deg);
+    opacity: 0.99;
+  }
+  30% {
+    transform: translate(300px, 1400px) rotate(20deg);
+    opacity: 0;
+    scale: 0.99;
+  }
+  50% {
+    transform: translate(400px, 5000px) rotate(-40deg);
+  }
+  60% {
+    transform: translate(500px, 8000px);
+  }
+  70% {
+    opacity: 0;
+    scale: 0;
+    transform: translate(0) rotate(0);
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+  80% {
+    transform: rotate(10deg);
+  }
+  85% {
+    transform: rotate(-6deg);
+  }
+  90% {
+    transform: rotate(6deg);
+  }
+  95% {
+    transform: rotate(-3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    transform: rotate(0deg);
+  }
+}
+.peach_falls {
+  animation: fall 2s linear forwards;
+}
+
+.title_box h1 .wobble:hover {
   animation: wobble 1.2s ease-in-out infinite;
 }
 
