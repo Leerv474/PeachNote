@@ -8,6 +8,9 @@ export const ModelWindow: React.FC<ModelWindowProps> = ({
   windowSizeCss,
   setShowWindow,
   children,
+  errorMessage,
+  successMessage,
+  disappear,
 }) => {
   const [closing, setClosing] = useState(false);
   const handleClose = () => {
@@ -36,6 +39,26 @@ export const ModelWindow: React.FC<ModelWindowProps> = ({
             &#x2718;
           </button>
           {children}
+        </div>
+        <div className={classNames(style.message)}>
+          {errorMessage ? (
+            <div
+              className={classNames(style.error, {
+                [style.disappear]: disappear,
+              })}
+            >
+              <p>{errorMessage}</p>
+            </div>
+          ) : null}
+          {successMessage ? (
+            <div
+              className={classNames(style.success, {
+                [style.disappear]: disappear,
+              })}
+            >
+              <p>{successMessage}</p>
+            </div>
+          ) : null}
         </div>
       </div>
     </>

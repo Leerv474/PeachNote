@@ -5,6 +5,7 @@ import { ModelWindow } from "../ui/ModelWindow/ModelWindow";
 import BoardSettignsWindowProps from "./props/BoardSettingsWindowProps";
 
 export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
+  settingsBoardId,
   setShowBoardSettingsWindow
 }) => {
   return (

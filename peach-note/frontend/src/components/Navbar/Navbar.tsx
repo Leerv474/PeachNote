@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./Navbar.module.css";
 import classNames from "classnames";
 import NavbarProps from "./props/NavbarProps";
 import { RiSidebarFoldFill, RiSidebarUnfoldFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { ActionButton } from "../ui/ActionButton/ActionButton";
+import { Context } from "../..";
 
 export const Navbar: React.FC<NavbarProps> = ({
   boardTitle,
-  username,
   sidebarOpen,
   setSidebarOpen,
 }) => {
@@ -17,6 +17,11 @@ export const Navbar: React.FC<NavbarProps> = ({
     navigate("/profile");
   };
   const [peachFalls, setPeachFalls] = useState(false);
+  const { store } = useContext(Context);
+  const [username, setUsername] = useState("giganoone");
+  useEffect(() => {
+    setUsername(store.user.username);
+  }, [store.user]);
   return (
     <>
       <div className={classNames(style.navbar)}>

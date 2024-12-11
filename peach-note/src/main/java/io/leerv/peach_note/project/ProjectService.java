@@ -21,6 +21,7 @@ import java.util.List;
 public class ProjectService {
     private final ProjectRepository repository;
     private final ProjectUtil projectUtil;
+    private final ProjectMapper projectMapper;
     private final TaskMapper taskMapper;
     private final BoardPermissionUtil boardPermissionUtil;
     private final BoardUtil boardUtil;
@@ -91,7 +92,7 @@ public class ProjectService {
     public ProjectProgressResponse getProgress(User authenticatedUser, Long projectId) {
         Project project = repository.findById(projectId)
                 .orElseThrow(() -> new RecordNotFound("Project not found"));
-        if (!boardPermissionUtil.userHasAccess(authenticatedUser.getId(), projectId)) {
+        if (!boardPermissionUtil.userHasAccess(authenticatedUser.getId(), project.getBoard().getId())) {
             throw new OperationNotPermittedException("User does not have the rights to view this project");
         }
         List<Task> taskList = project.getTaskList();
@@ -111,7 +112,7 @@ public class ProjectService {
     public ProjectDto view(User user, Long projectId) {
         Project project = repository.findById(projectId)
                 .orElseThrow(() -> new RecordNotFound("Project not found"));
-        if (!boardPermissionUtil.userHasAccess(user.getId(), projectId)) {
+        if (!boardPermissionUtil.userHasAccess(user.getId(), project.getBoard().getId())) {
             throw new OperationNotPermittedException("User does not have the rights to view this project");
         }
         int finishedTasks = projectUtil.countFinishedTasks(project);
@@ -123,5 +124,15 @@ public class ProjectService {
                 .tasksAmount(project.getTaskList().size())
                 .finishedTasks(finishedTasks)
                 .build();
+    }
+
+    public List<ProjectItemDto> listAllByBoard(Long boardId, User authenticatedUser) {
+        if (!boardPermissionUtil.userHasAccess(authenticatedUser.getId(), boardId)) {
+            throw new OperationNotPermittedException("User does not have the rights to view this project");
+        }
+
+        List<Project> projectList = boardUtil.findBoardById(boardId).getProjectList();
+
+        return projectList.stream().map(projectMapper::mapToProjectItemDto).toList();
     }
 }

@@ -82,3 +82,10 @@
 .create_board_pos {
   width: 80%;
 }
+
+.empty_message {
+  text-align: center;
+  color: var(--text-dark40);
+  padding-top: 30px;
+  height: 100px;
+}

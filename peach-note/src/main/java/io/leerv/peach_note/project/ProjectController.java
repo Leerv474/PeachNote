@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("project")
@@ -74,6 +76,17 @@ public class ProjectController {
         User user = (User) authentication.getPrincipal();
         return ResponseEntity.ok(
                 service.view(user, projectId)
+        );
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<ProjectItemDto>> list(
+            @PathVariable Long boardId,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                service.listAllByBoard(boardId, user)
         );
     }
 }

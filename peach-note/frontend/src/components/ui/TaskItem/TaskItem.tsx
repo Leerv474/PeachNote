@@ -14,7 +14,6 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     <>
       <div className={classNames(style.task_item)}>
         <div
-          className={classNames(style.button_container)}
           onClick={() => {
             openTaskWindow(taskId);
           }}

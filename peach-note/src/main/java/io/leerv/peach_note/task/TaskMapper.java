@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TaskMapper {
     private final TaskUtil taskUtil;
+    private final StatusTableMapper statusTableMapper;
 
     public SimpleTaskDto mapToSimpleView(Task task) {
         return SimpleTaskDto.builder()
@@ -36,7 +37,7 @@ public class TaskMapper {
                 .taskId(task.getId())
                 .title(task.getTitle())
                 .priority(taskUtil.calculatePriority(task))
-                .statusTable(StatusTableMapper.mapToStatusTableItemDto(task.getStatusTable()))
+                .statusTable(statusTableMapper.mapToStatusTableItemDto(task.getStatusTable()))
                 .build();
     }
 }

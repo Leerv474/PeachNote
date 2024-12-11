@@ -4,13 +4,13 @@
 }
 
 .top_bar {
-  height: 50px;
+  height: 60px;
   display: flex;
   margin-right: 30px;
 }
 
 .title_input {
-  height: 100%;
+  height: 45px;
   width: 500px;
   border: none;
   outline: none;
@@ -52,6 +52,7 @@
   font-size: 18pt;
   font-weight: bold;
   color: var(--text-dark70);
+  margin-left: 20px;
 }
 
 .description {
@@ -93,4 +94,52 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+@keyframes slide{
+  to {
+    transform: translateY(0);
+  }
+}
+
+.message {
+  position: absolute;
+  height: 80px;
+  width: 100%;
+  z-index: 1000;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.error, .success{
+  height: 100%;
+  width: 200px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(100px);
+  opacity: 1;
+  animation: slide 0.3s ease forwards;
+  transition: opacity 0.3s ease;
+}
+
+.error {
+  background: var(--accent-red);
+}
+
+.success {
+  background: var(--accent-green);
+}
+
+.disappear {
+  opacity: 0;
+}
+
+.message p{
+  text-wrap: stable;
+  color: var(--text-light);
+  text-align: center;
+  font-size: 16px;
 }

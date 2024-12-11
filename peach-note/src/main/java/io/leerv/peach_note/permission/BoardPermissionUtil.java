@@ -1,7 +1,6 @@
 package io.leerv.peach_note.permission;
 
 import io.leerv.peach_note.board.Board;
-import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.exceptions.RecordNotFound;
 import io.leerv.peach_note.user.User;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +28,9 @@ public class BoardPermissionUtil {
     }
 
     private void grantPermission(User user, Board board, Function<PermissionUtil, Permission> permissionResolver) {
-        if (repository.userPermissionExists(user.getId(), board.getId())) {
-            throw new IllegalRequestContentException("Permission already exists");
-        }
+//        if (repository.userPermissionExists(user.getId(), board.getId())) {
+//            throw new IllegalRequestContentException("Permission already exists");
+//        }
         BoardPermission boardPermission = BoardPermission.builder()
                 .user(user)
                 .board(board)

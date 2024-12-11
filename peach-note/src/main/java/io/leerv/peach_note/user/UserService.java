@@ -3,6 +3,7 @@ package io.leerv.peach_note.user;
 import io.leerv.peach_note.authorities.RoleUtil;
 import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.security.JwtTokenService;
+import io.leerv.peach_note.user.dto.SimpleUserDto;
 import io.leerv.peach_note.user.dto.UserDeleteRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class UserService {
         );
         SecurityContextHolder.getContext().setAuthentication(updatedAuth);
 
-        jwtTokenService.invalidateRefreshTokens(user);
+        jwtTokenService.invalidateAllRefreshTokens(user);
 
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
@@ -65,7 +66,7 @@ public class UserService {
                 user.getAuthorities()
         );
         SecurityContextHolder.getContext().setAuthentication(updatedAuth);
-        jwtTokenService.invalidateRefreshTokens(user);
+        jwtTokenService.invalidateAllRefreshTokens(user);
 
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
@@ -87,7 +88,7 @@ public class UserService {
                 user.getAuthorities()
         );
         SecurityContextHolder.getContext().setAuthentication(updatedAuth);
-        jwtTokenService.invalidateRefreshTokens(user);
+        jwtTokenService.invalidateAllRefreshTokens(user);
 
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
@@ -105,5 +106,12 @@ public class UserService {
         }
         roleUtil.detachRoles(user.getId());
         repository.delete(user);
+    }
+
+    public SimpleUserDto getUsername(Authentication authentication) {
+        User authenticatedUser = (User) authentication.getPrincipal();
+        User user = repository.findById(authenticatedUser.getId())
+                .orElseThrow(() -> new UsernameNotFoundException(("User not found")));
+        return SimpleUserDto.builder().userId(user.getId()).username(user.getName()).build();
     }
 }

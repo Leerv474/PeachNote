@@ -20,7 +20,7 @@ public class Project {
     @GeneratedValue
     private Long id;
     private String title;
-    @Column(columnDefinition = "varchar(512)")
+    @Column(length = 512)
     private String description;
     private LocalDate deadline;
 

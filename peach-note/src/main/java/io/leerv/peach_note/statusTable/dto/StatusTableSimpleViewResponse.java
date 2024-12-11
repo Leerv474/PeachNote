@@ -10,5 +10,6 @@ import java.util.List;
 @Builder
 public class StatusTableSimpleViewResponse {
     private Long tableId;
+    private String name;
     private List<SimpleTaskDto> taskList;
 }

@@ -1,5 +1,6 @@
 package io.leerv.peach_note.authorities;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

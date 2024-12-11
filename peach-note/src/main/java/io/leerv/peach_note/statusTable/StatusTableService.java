@@ -41,7 +41,8 @@ public class StatusTableService {
         }
         List<SimpleTaskDto> simpleViewtaskList = statusTable.getTaskList().stream().map(taskMapper::mapToSimpleView).toList();
         return StatusTableSimpleViewResponse.builder()
-                .tableId(tableId)
+                .tableId(statusTable.getId())
+                .name(statusTable.getName())
                 .taskList(simpleViewtaskList)
                 .build();
     }

@@ -36,19 +36,19 @@ public class JwtFilter extends OncePerRequestFilter {
 
         final String authHeaders = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String accessToken;
-        final String username;
+        final String email;
 
         if (authHeaders == null || !authHeaders.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
         accessToken = authHeaders.substring(7);
-        username = jwtTokenService.extractUsername(accessToken);
-        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+        email = jwtTokenService.extractUsername(accessToken);
+        if (email == null || SecurityContextHolder.getContext().getAuthentication() != null) {
             throw new AuthenticationException("Jwt token invalid");
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()

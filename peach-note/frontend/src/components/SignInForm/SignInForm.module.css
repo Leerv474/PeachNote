@@ -117,3 +117,13 @@
 .signin_card form button .wobble {
   animation: wobble 1.2s ease-in-out infinite;
 }
+
+.server_error {
+  position: absolute;
+  top: 0;
+}
+
+.server_error p {
+  font-size: 18px;
+  color: var(--accent-red);
+}

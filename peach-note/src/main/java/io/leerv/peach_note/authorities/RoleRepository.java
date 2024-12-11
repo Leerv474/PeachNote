@@ -10,9 +10,10 @@ public interface RoleRepository extends JpaRepository<Role, String> {
     Optional<Role> findByName(String name);
 
     @Query("""
-            select role
-            from Role role
-            where role.user.id = :userId
+                SELECT r
+                FROM Role r
+                JOIN r.users u
+                WHERE u.id = :userId
             """)
     List<Role> findByUserId(Long userId);
 }

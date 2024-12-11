@@ -1,18 +1,12 @@
 package io.leerv.peach_note.user;
 
-import io.leerv.peach_note.user.dto.UserChangeEmailRequest;
-import io.leerv.peach_note.user.dto.UserChangePasswordRequest;
-import io.leerv.peach_note.user.dto.UserDeleteRequest;
-import io.leerv.peach_note.user.dto.UserRenameRequest;
+import io.leerv.peach_note.user.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -22,6 +16,14 @@ import java.util.Map;
 public class UserController {
     private final UserService service;
 
+    @GetMapping("/get_username")
+    public ResponseEntity<SimpleUserDto> getUsername(
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(service.getUsername(authentication
+        ));
+    }
+
     @PostMapping("/rename")
     public ResponseEntity<?> renameUser(
             @Valid @RequestBody UserRenameRequest request,
@@ -30,7 +32,7 @@ public class UserController {
         Map<String, String> newJwtPair = service.rename(authentication, request.getUsername());
         String refreshTokenCookie = String.format(
                 "refresh_token=%s; Max-Age=%s; Path=%s; HttpOnly",
-                newJwtPair.get("refreshToken"), 30*24*60*60, "/"
+                newJwtPair.get("refreshToken"), 30 * 24 * 60 * 60, "/"
         );
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", newJwtPair.get("accessToken"));
@@ -46,7 +48,7 @@ public class UserController {
         Map<String, String> newJwtPair = service.changePassword(authentication, request.getPassword(), request.getNewPassword());
         String refreshTokenCookie = String.format(
                 "refresh_token=%s; Max-Age=%s; Path=%s; HttpOnly",
-                newJwtPair.get("refreshToken"), 30*24*60*60, "/"
+                newJwtPair.get("refreshToken"), 30 * 24 * 60 * 60, "/"
         );
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", newJwtPair.get("accessToken"));
@@ -62,7 +64,7 @@ public class UserController {
         Map<String, String> newJwtPair = service.changeEmail(authentication, request.getEmail());
         String refreshTokenCookie = String.format(
                 "refresh_token=%s; Max-Age=%s; Path=%s; HttpOnly",
-                newJwtPair.get("refreshToken"), 30*24*60*60, "/"
+                newJwtPair.get("refreshToken"), 30 * 24 * 60 * 60, "/"
         );
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", newJwtPair.get("accessToken"));

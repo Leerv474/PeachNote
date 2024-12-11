@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./SignUpForm.module.css";
 import classNames from "classnames";
 import { useFormik } from "formik";
@@ -6,8 +6,25 @@ import * as yup from "yup";
 import SignUpFormikProps from "./props/SighUpFormikProps";
 import SignUpProps from "./props/SignUpProps";
 import { BiSolidLeaf } from "react-icons/bi";
+import { Context } from "../..";
 
-export const SignUpForm: React.FC<SignUpProps> = ({ setSignIn }) => {
+export const SignUpForm: React.FC<SignUpProps> = ({
+  setSignIn,
+  setShowActivationWindow,
+}) => {
+  const { store } = useContext(Context);
+  const [serverError, setServerError] = useState("");
+  const handleSubmit = async (values: any) => {
+    const response = await store.signUpUser(values);
+    if (response?.error) {
+      setServerError(response.error);
+      return;
+    }
+    setServerError("");
+    setShowActivationWindow(true);
+    setSignIn(true);
+  };
+
   const validationSchema = yup.object({
     username: yup
       .string()
@@ -49,10 +66,7 @@ export const SignUpForm: React.FC<SignUpProps> = ({ setSignIn }) => {
       confirmedPassword: "",
     },
     onSubmit: (values) => {
-      console.log(values);
-      //TODO: do registration request
-      //      activation popup
-      setSignIn(true);
+      handleSubmit(values);
     },
     validationSchema,
   });
@@ -133,6 +147,9 @@ export const SignUpForm: React.FC<SignUpProps> = ({ setSignIn }) => {
             className={classNames(style.leaf, { [style.wobble]: leafWobble })}
           />
         </button>
+        <div className={classNames(style.server_error)}>
+          <p>{serverError}</p>
+        </div>
       </form>
     </div>
   );

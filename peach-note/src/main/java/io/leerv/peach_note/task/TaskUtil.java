@@ -28,6 +28,9 @@ public class TaskUtil {
     }
 
     public long calculatePriority(Task task) {
+        if (task.getDeadline() == null) {
+            return 0;
+        }
         long daysUntilDeadline = ChronoUnit.DAYS.between(task.getCreationDate(), task.getDeadline());
         return daysUntilDeadline > 0 ? daysUntilDeadline : 0;
     }

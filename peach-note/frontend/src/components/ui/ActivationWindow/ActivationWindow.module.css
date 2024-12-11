@@ -1,0 +1,49 @@
+.window_size {
+  height: 200px !important;
+  width: 500px !important;
+  position: relative;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.inputs {
+  display: flex;
+  height: 80px;
+}
+
+.container .inputs input {
+  font-size: 40px;
+  width: 45px;
+  margin: 10px 5px;
+  outline: none;
+  background: none;
+  border: none;
+  background-color: var(--secondary-color40);
+  border-radius: 5px;
+  text-align: center;
+  transition: border-bottom 0.1s ease;
+  caret-color: transparent;
+  color: var(--text-dark70);
+}
+
+.inputs input:focus {
+  border-bottom: 3px solid var(--accent-blue);
+}
+
+.error {
+  width: 100%;
+  bottom: 0;
+  position: absolute;
+  margin-bottom: 20px;
+}
+
+.error p {
+  color: var(--accent-red);
+  font-size: 20px;
+  text-align: center;
+}

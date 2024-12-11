@@ -1,12 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./SignInForm.module.css";
-import classNames from "classnames"
+import classNames from "classnames";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import SignInFormikProps from "./props/SignInFormikProps";
 import { BiSolidLeaf } from "react-icons/bi";
+import { Context } from "../..";
+import { useNavigate } from "react-router-dom";
 
 export const SignInForm: React.FC = () => {
+  const { store } = useContext(Context);
+  const navigate = useNavigate();
+  const handleRedirect = () => {
+    navigate("/dashboard");
+  };
+  const [serverError, setServerError] = useState("");
+  const handleSubmit = async (values: any) => {
+    const response = await store.signInUser(values);
+    if (response?.businessErrorDescription) {
+      setServerError(response.businessErrorDescription);
+    } else {
+      setServerError("");
+      handleRedirect();
+    }
+  };
+
   const validationSchema = yup.object({
     email: yup
       .string()
@@ -28,22 +46,22 @@ export const SignInForm: React.FC = () => {
       password: "",
     },
     onSubmit: (values) => {
-      console.log(values);
+      handleSubmit(values);
     },
     validationSchema,
   });
 
   const [leafWobble, setLeafWobble] = useState(false);
   useEffect(() => {
-    setLeafWobble(Object.entries(formik.errors).length === 0)
+    setLeafWobble(Object.entries(formik.errors).length === 0);
     for (const value of Object.values(formik.values)) {
       if (String(value) === "") {
         setLeafWobble(false);
         return;
       }
     }
-    console.log(Object.entries(formik.errors).length === 0)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log(Object.entries(formik.errors).length === 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.errors]);
 
   return (
@@ -77,8 +95,13 @@ export const SignInForm: React.FC = () => {
           ) : null}
         </div>
         <button type="submit">
-          <BiSolidLeaf className={classNames(style.leaf, {[style.wobble] : leafWobble})} />
+          <BiSolidLeaf
+            className={classNames(style.leaf, { [style.wobble]: leafWobble })}
+          />
         </button>
+        <div className={classNames(style.server_error)}>
+          <p>{serverError}</p>
+        </div>
       </form>
     </div>
   );

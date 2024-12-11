@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./Dashboard.module.css";
 import classNames from "classnames";
 import { Navbar } from "../../components/Navbar/Navbar";
@@ -9,17 +9,17 @@ import { CreateTaskWindow } from "../../components/CreateTaskWindow/CreateTaskWi
 import { ProjectWindow } from "../../components/ProjectWindow/ProjectWindow";
 import { TaskWindow } from "../../components/TaskWindow/TaskWindow";
 import { BoardSettingsWindow } from "../../components/BoardSettingsWindow/BoardSettingsWindow";
+import { Context } from "../..";
+import IBoard from "../../interfaces/IBoard";
 
 export const Dashboard: React.FC = () => {
-  //TODO: according to responses
-  const boardTitle = "test";
-  const username = "test";
-  const boardNameList: Array<string> = [];
-  const boardMap: Record<string, number> = {};
+  const { store } = useContext(Context);
 
   const [boardId, setBoardId] = useState(-1);
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // triggers
+  const [tableReload, triggerTableReload] = useState(0);
   // windows
   const [showCreateBoardWindow, setShowCreateBoard] = useState(false);
   const [showCreateTaskWindow, setShowCreateTask] = useState(false);
@@ -45,20 +45,31 @@ export const Dashboard: React.FC = () => {
     setShowBoardSettingsWindow(true);
   };
 
+  const [boardData, setBoardData] = useState<IBoard>();
+
+  useEffect(() => {
+    const fetchBoardData = async () => {
+      const data = await store.viewBoard(boardId);
+      setBoardData(data);
+    };
+    if (boardId > 0) {
+      fetchBoardData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardId]);
+
   return (
     <>
       <div className={classNames(style.dashboard_container)}>
         <Navbar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
-          boardTitle={boardTitle}
-          username={username}
+          boardTitle={boardData?.name ?? ""}
+          username={"gigatester"}
         />
         <Sidebar
           sidebarOpen={sidebarOpen}
           setShowCreateBoard={setShowCreateBoard}
-          boardNameList={boardNameList}
-          boardMap={boardMap}
           setBoardId={setBoardId}
           openBoardSettingsWindow={openBoardSettingsWindow}
         />
@@ -67,13 +78,18 @@ export const Dashboard: React.FC = () => {
           setShowCreateTask={setShowCreateTask}
           openProjectWindow={openProjectWindow}
           openTaskWindow={openTaskWindow}
-          boardId={boardId}
+          boardData={boardData ?? null}
+          tableReload={tableReload}
         />
         {showCreateBoardWindow ? (
           <CreateBoardWindow setShowCreateBoard={setShowCreateBoard} />
         ) : null}
         {showCreateTaskWindow ? (
-          <CreateTaskWindow setShowCreateTask={setShowCreateTask} />
+          <CreateTaskWindow
+            boardId={boardId}
+            setShowCreateTask={setShowCreateTask}
+            triggerTableReload={triggerTableReload}
+          />
         ) : null}
         {showProjectWindow ? (
           <ProjectWindow
@@ -86,6 +102,7 @@ export const Dashboard: React.FC = () => {
         ) : null}
         {showBoardSettingsWindow ? (
           <BoardSettingsWindow
+            settingsBoardId={settingsBoardId}
             setShowBoardSettingsWindow={setShowBoardSettingsWindow}
           />
         ) : null}

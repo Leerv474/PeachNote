@@ -1,31 +1,53 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./Table.module.css";
 import classNames from "classnames";
 import TableProps from "./props/TableProps";
 import { TaskItem } from "../TaskItem/TaskItem";
+import { Context } from "../../..";
+import ITable from "../../../interfaces/ITable";
 
 export const Table: React.FC<TableProps> = ({
-  title,
+  tableId,
   isLastStatus = false,
   openTaskWindow,
+  tableReload,
 }) => {
-  const taskList = [
-    "super duper long ass string of characters that is needed to test this wrap capabilities",
-    "test",
-  ];
+  const { store } = useContext(Context);
+
+  const [tableData, setTableData] = useState<ITable>();
+  useEffect(() => {
+    const fetchData = async () => {
+      const responseData = await store.viewTable(tableId);
+      setTableData(responseData);
+    };
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableReload]);
+
   return (
     <>
       <div className={classNames(style.table_container)}>
-        <div className={classNames(style.table_title_container)}>{title}</div>
+        <div className={classNames(style.table_title_container)}>
+          {tableData?.name}
+        </div>
         <div className={classNames(style.task_list)}>
-          {taskList.map((value) => (
-            <TaskItem
-              title={value}
-              taskId={1}
-              isLastStatus={isLastStatus}
-              openTaskWindow={openTaskWindow}
-            />
-          ))}
+          {tableData?.taskList.length !== 0 ? (
+            tableData?.taskList.sort((a, b) => b.priority - a.priority).map(({ taskId, title, priority }) => {
+              return (
+                <TaskItem
+                  key={taskId}
+                  title={title}
+                  taskId={taskId}
+                  isLastStatus={isLastStatus}
+                  openTaskWindow={openTaskWindow}
+                />
+              );
+            })
+          ) : (
+            <div className={classNames(style.empty_message)}>
+              <p>Empty table</p>
+            </div>
+          )}
         </div>
       </div>
     </>

@@ -1,5 +1,6 @@
 export default interface TableProps {
-  title: string;
+  tableId: number;
   isLastStatus?: boolean;
   openTaskWindow: (id: number) => void;
+  tableReload: number;
 }

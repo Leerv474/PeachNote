@@ -1,31 +1,33 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./Sidebar.module.css";
 import classNames from "classnames";
 import { ActionButton } from "../ui/ActionButton/ActionButton";
 import SidebarProps from "./props/SidebarProps";
 import { BoardItem } from "../ui/BoardItem/BoardItem";
+import { Context } from "../..";
+import IBoardItem from "../../interfaces/IBoardItem";
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  boardNameList,
-  boardMap,
   setShowCreateBoard,
   setBoardId,
   sidebarOpen,
-  openBoardSettingsWindow
+  openBoardSettingsWindow,
 }) => {
-  const handleCreateBoard = () => {setShowCreateBoard(true)};
-  const testNames = [
-    "test",
-    "test",
-    "test",
-    "test",
-    "test",
-    "test",
-    "test",
-    "test",
-    "test",
-    "test",
-  ];
+  const handleCreateBoard = () => {
+    setShowCreateBoard(true);
+  };
+
+  const [boardList, setBoardList] = useState<Array<IBoardItem>>();
+  const { store } = useContext(Context);
+
+  useEffect(() => {
+    const fetchBoards = async () => {
+      const boards = await store.findAllBoards();
+      setBoardList(boards);
+    };
+    fetchBoards();
+  }, []);
+
   return (
     <>
       <div
@@ -40,9 +42,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
         <div className={classNames(style.content_container)}>
           <div className={style.board_list_container}>
-            {testNames.map((name) => (
-              <BoardItem name={name} boardId={1} setBoardId={setBoardId} openBoardSettingsWindow={openBoardSettingsWindow}/>
-            ))}
+            {boardList && boardList.length !== 0 ? 
+              Object.entries(boardList).map(([value, { boardId, name }]) => {
+                return (
+                  <BoardItem
+                    key={boardId}
+                    name={name}
+                    boardId={Number(boardId)}
+                    setBoardId={setBoardId}
+                    openBoardSettingsWindow={openBoardSettingsWindow}
+                  ></BoardItem>
+                );
+              }): 
+            <p className={classNames(style.empty_message)}>no boards created</p>}
           </div>
           <div className={style.create_button_container}>
             <ActionButton

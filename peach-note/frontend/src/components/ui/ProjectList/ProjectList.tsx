@@ -1,53 +1,33 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import style from "./ProjectList.module.css";
 import classNames from "classnames";
 import { TiArrowSortedUp } from "react-icons/ti";
 import { ProjectItem } from "../ProjectItem/ProjectItem";
 import ProjectListProps from "./props/ProjectListProps";
+import IProjectItem from "../../../interfaces/IProjectItem";
+import { Context } from "../../..";
 
 export const ProjectList: React.FC<ProjectListProps> = ({
+  boardId,
   openProjectWindow,
 }) => {
   const [listExpanded, setListExpanded] = useState(false);
+
+  const { store } = useContext(Context);
+  const [projectList, setProjectList] = useState<Array<IProjectItem>>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await store.listProjects(boardId);
+      setProjectList(data);
+    };
+    if (boardId < 0) {
+      fetchData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // TODO: replce with actual data
-  const projects = [
-    {
-      title: "PROJECT",
-      projectId: 1,
-      tasksAmount: 20,
-      tasksCompleted: 16,
-    },
-    {
-      title: "PROJECT",
-      projectId: 2,
-      tasksAmount: 20,
-      tasksCompleted: 1,
-    },
-    {
-      title: "PROJECT",
-      projectId: 3,
-      tasksAmount: 20,
-      tasksCompleted: 12,
-    },
-    {
-      title: "PROJECT",
-      projectId: 4,
-      tasksAmount: 20,
-      tasksCompleted: 17,
-    },
-    {
-      title: "PROJECT",
-      projectId: 1,
-      tasksAmount: 20,
-      tasksCompleted: 17,
-    },
-    {
-      title: "PROJECT",
-      projectId: 1,
-      tasksAmount: 20,
-      tasksCompleted: 17,
-    },
-  ];
   return (
     <>
       <div
@@ -82,19 +62,25 @@ export const ProjectList: React.FC<ProjectListProps> = ({
           })}
         >
           <div className={classNames(style.scroll_container)}>
-            {projects.map(
-              ({ title, projectId, tasksAmount, tasksCompleted }) => {
-                return (
-                  <ProjectItem
-                    key={projectId}
-                    projectId={projectId}
-                    title={title}
-                    tasksAmount={tasksAmount}
-                    tasksCompleted={tasksCompleted}
-                    openProjectWindow={openProjectWindow}
-                  />
-                );
-              },
+            {projectList && projectList.length !== 0 ? (
+              projectList.map(
+                ({ title, projectId, tasksAmount, finishedTasksAmount }) => {
+                  return (
+                    <ProjectItem
+                      key={projectId}
+                      projectId={projectId}
+                      title={title}
+                      tasksAmount={tasksAmount}
+                      finishedTasksAmount={finishedTasksAmount}
+                      openProjectWindow={openProjectWindow}
+                    />
+                  );
+                },
+              )
+            ) : (
+              <div className={classNames(style.empty_message)}>
+                <p>No project found</p>
+              </div>
             )}
           </div>
         </div>

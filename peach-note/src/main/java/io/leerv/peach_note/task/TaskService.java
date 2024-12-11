@@ -44,15 +44,19 @@ public class TaskService {
         StatusTable statusTable = statusTableUtil.findBucketByBoardId(request.getBoardId());
 
         Project project = null;
+        LocalDate deadline = null;
         if (request.getProjectId() != null) {
             project = projectUtil.findById(request.getProjectId());
+        }
+        if (request.getDeadline() != null) {
+            deadline = request.getDeadline();
         }
 
         Task newTask = Task.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .creationDate(LocalDate.now())
-                .deadline(request.getDeadline())
+                .deadline(deadline)
                 .project(project)
                 .statusTable(statusTable)
                 .build();

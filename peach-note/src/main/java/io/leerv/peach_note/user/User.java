@@ -49,12 +49,12 @@ public class User implements UserDetails, Principal {
 
     @Override
     public String getName() {
-        return email;
+        return username;
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.email;
     }
 
     @Override

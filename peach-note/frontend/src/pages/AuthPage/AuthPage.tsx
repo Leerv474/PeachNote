@@ -5,6 +5,7 @@ import { TiArrowSortedUp } from "react-icons/ti";
 import { SignUpForm } from "../../components/SignUpForm/SignUpForm";
 import { SignInForm } from "../../components/SignInForm/SignInForm";
 import { useLocation } from "react-router-dom";
+import { ActivationWindow } from "../../components/ui/ActivationWindow/ActivationWindow";
 
 export const AuthPage: React.FC = () => {
   const location = useLocation();
@@ -13,6 +14,8 @@ export const AuthPage: React.FC = () => {
     state === null ? true : state.isSignIn,
   );
   const [peachFalls, setPeachFalls] = useState(false);
+
+  const [showActivationWindow, setShowActivationWindow] = useState(false);
   return (
     <>
       <div className={classNames(style.main_card)}>
@@ -59,7 +62,21 @@ export const AuthPage: React.FC = () => {
             </div>
           ) : null}
         </div>
-        {isSighIn ? <SignInForm /> : <SignUpForm setSignIn={setSignIn} />}
+        {isSighIn ? (
+          <SignInForm />
+        ) : (
+          <SignUpForm
+            setSignIn={setSignIn}
+            setShowActivationWindow={setShowActivationWindow}
+          />
+        )}
+        {showActivationWindow ? (
+          <ActivationWindow
+            setShowActivationWindow={setShowActivationWindow}
+            length={6}
+            showActivationWindow={showActivationWindow}
+          ></ActivationWindow>
+        ) : null}
       </div>
     </>
   );

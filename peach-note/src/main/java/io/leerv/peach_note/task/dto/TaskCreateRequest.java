@@ -19,7 +19,6 @@ public class TaskCreateRequest {
     private String description;
     @Future(message = "deadline should be in the future, you know...")
     private LocalDate deadline;
-    @NotNull(message = "project id is required")
     @Min(value = 0, message = "id cannot be less than 0")
     private Long projectId;
     @NotNull(message = "board id is required")

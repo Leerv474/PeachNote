@@ -7,7 +7,7 @@ export const ProjectItem: React.FC<ProjectItemProps> = ({
   projectId,
   title,
   tasksAmount,
-  tasksCompleted,
+  finishedTasksAmount: tasksCompleted,
   openProjectWindow,
 }) => {
   const [progressWidth, setProgressWidth] = useState(0);

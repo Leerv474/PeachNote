@@ -8,14 +8,14 @@ import { ActionButton } from "../ui/ActionButton/ActionButton";
 export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
   setShowCreateBoard,
 }) => {
-  const [inputs, setInputs] = useState<string[]>([]);
+  const [tableNameInputs, setTableNameInputs] = useState<string[]>([]);
   const [users, setUsers] = useState<string[]>([]);
   const [newUserInfo, setNewUserInfo] = useState("");
 
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
   const addInput = () => {
-    setInputs([...inputs, ""]);
+    setTableNameInputs([...tableNameInputs, ""]);
   };
 
   const addUser = () => {
@@ -49,12 +49,12 @@ export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
             <p>table options</p>
             <div className={classNames(style.options)}>
               <div className={classNames(style.tables_list)}>
-                {inputs.map((placeholder, index) => (
+                {tableNameInputs.map((placeholder, index) => (
                   <div key={index} className={classNames(style.new_table_item)}>
                     <input
                       type="text"
                       onChange={(e) => {
-                        setInputs((prev) =>
+                        setTableNameInputs((prev) =>
                           prev.map((value, i) => {
                             if (i !== index) return value;
                             value = e.target.value;
@@ -63,14 +63,14 @@ export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
                         );
                       }}
                       placeholder="status name"
-                      value={inputs[index]}
+                      value={tableNameInputs[index]}
                     />
                   </div>
                 ))}
                 <button
                   type="button"
                   onClick={() => {
-                    if (inputs.lastIndexOf("") !== -1 && inputs.length !== 0)
+                    if (tableNameInputs.lastIndexOf("") !== -1 && tableNameInputs.length !== 0)
                       return;
                     addInput();
                   }}

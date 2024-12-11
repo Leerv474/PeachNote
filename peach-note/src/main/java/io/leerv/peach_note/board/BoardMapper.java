@@ -4,6 +4,7 @@ import io.leerv.peach_note.board.dto.BoardCreateResponse;
 import io.leerv.peach_note.board.dto.BoardDto;
 import io.leerv.peach_note.board.dto.BoardSimpleDto;
 import io.leerv.peach_note.project.ProjectMapper;
+import io.leerv.peach_note.statusTable.StatusTableMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardMapper {
     private final ProjectMapper projectMapper;
+    private final StatusTableMapper statusTableMapper;
 
     public BoardDto mapToBoardDto(Board board) {
         return BoardDto.builder()
@@ -23,6 +25,7 @@ public class BoardMapper {
                         .orElseGet(List::of)
                         .stream().map(foo -> foo.getUser().getId()).toList())
                 .projectList(board.getProjectList().stream().map(projectMapper::mapToProjectItemDto).toList())
+                .statusTableList(board.getStatusTableList().stream().map(statusTableMapper::mapToStatusTableItemDto).toList())
                 .build();
     }
 

@@ -14,7 +14,7 @@ public class LoginRequest {
 
     @NotNull(message = "password is mandatory")
     @NotBlank(message = "password is mandatory")
-    @Pattern(regexp = "^[\\x00-\\x7F]+$", message = "password should not contain non-latin characters")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "password should not contain non-latin characters")
     @Size(min = 8, message = "Password should be 8 characters long minimum")
     private String password;
 }

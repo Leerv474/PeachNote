@@ -77,3 +77,9 @@
   padding-bottom: 8px;
   padding-top: 3px;
 }
+
+.no_board_message {
+  font-size: 80px;
+  color: var(--text-light130);
+  margin: auto;
+}

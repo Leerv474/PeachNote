@@ -48,6 +48,7 @@ application:
   frontend:
     allowed-origins:
       - http://localhost:3000
+    allowed-origin: http://localhost:3000
 
 server:
   port: 8088

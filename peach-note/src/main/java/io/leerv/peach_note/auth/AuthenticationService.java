@@ -2,10 +2,12 @@ package io.leerv.peach_note.auth;
 
 import io.leerv.peach_note.activationToken.ActivationTokenService;
 import io.leerv.peach_note.auth.dto.LoginRequest;
+import io.leerv.peach_note.auth.dto.LoginResponseDto;
 import io.leerv.peach_note.auth.dto.RegistrationRequest;
 import io.leerv.peach_note.auth.email.EmailService;
 import io.leerv.peach_note.authorities.Role;
 import io.leerv.peach_note.authorities.RoleRepository;
+import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.exceptions.OperationNotPermittedException;
 import io.leerv.peach_note.security.JwtTokenService;
 import io.leerv.peach_note.security.RefreshTokenRepository;
@@ -42,6 +44,14 @@ public class AuthenticationService {
     public void register(RegistrationRequest request) throws MessagingException {
         Role role = roleRepository.findByName("USER")
                 .orElseThrow(() -> new InternalError("Authorities were not initialized"));
+        boolean emailOccupied = userRepository.existsByEmail(request.getEmail());
+        if (emailOccupied) {
+            throw new IllegalRequestContentException("user with such email already exists");
+        }
+        boolean usernameOccupied = userRepository.existsByUsername(request.getUsername());
+        if (usernameOccupied) {
+            throw new IllegalRequestContentException("user with such username already exists");
+        }
         User user = User.builder()
                 .email(request.getEmail())
                 .username(request.getUsername())
@@ -69,7 +79,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public Map<String, String> login(@Valid LoginRequest request) {
+    public LoginResponseDto login(@Valid LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -79,7 +89,12 @@ public class AuthenticationService {
         User user = (User) authentication.getPrincipal();
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
-        return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
+        return LoginResponseDto.builder()
+                .userId(user.getId())
+                .username(user.getName())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public void resendActivationCode(String email) throws MessagingException {
@@ -102,5 +117,9 @@ public class AuthenticationService {
         String newAccessToken = jwtTokenService.generateAccessToken(user);
         String newRefreshToken = jwtTokenService.generateRefreshToken(user);
         return Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken);
+    }
+
+    public void logout(String refreshToken) {
+        jwtTokenService.invalidateRefreshToken(refreshToken);
     }
 }

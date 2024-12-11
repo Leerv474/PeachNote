@@ -29,7 +29,7 @@ public class JwtTokenService {
     private String secret;
 
     public String generateAccessToken(User user) {
-        return String.format("Bearer %s", buildToken(new HashMap<>(), user, accessTokenExpiration));
+        return String.format(buildToken(new HashMap<>(), user, accessTokenExpiration));
     }
 
     public String generateRefreshToken(User user) {
@@ -98,8 +98,12 @@ public class JwtTokenService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public void invalidateRefreshTokens(User user) {
+    public void invalidateAllRefreshTokens(User user) {
         List<RefreshToken> tokens = refreshTokenRepository.findTokensByUserId(user.getId());
         refreshTokenRepository.deleteAll(tokens);
+    }
+
+    public void invalidateRefreshToken(String refreshToken) {
+        refreshTokenRepository.deleteByToken(refreshToken);
     }
 }

@@ -81,3 +81,15 @@
 .arrow_rotated {
   transform: rotateX(180deg);
 }
+
+.empty_message {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty_message p {
+  text-align: center;
+  color: var(--text-dark60);
+}
