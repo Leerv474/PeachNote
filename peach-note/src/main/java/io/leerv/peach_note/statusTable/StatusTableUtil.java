@@ -2,6 +2,7 @@ package io.leerv.peach_note.statusTable;
 
 import io.leerv.peach_note.board.Board;
 import io.leerv.peach_note.exceptions.RecordNotFound;
+import io.leerv.peach_note.statusTable.dto.AdditionalTablesDto;
 import io.leerv.peach_note.task.TaskUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class StatusTableUtil {
     private final StatusTableRepository repository;
     private final TaskUtil taskUtil;
 
-    public void createStatusTables(Board board, Map<String, Integer> additionalStatusTables) {
+    public void createStatusTables(Board board, List<String> additionalStatusTables) {
         List<String> defaultStatusNameList = List.of("Bucket", "Delayed", "Current", "Await");
         List<StatusTable> statusTableList = new ArrayList<>(IntStream.range(0, defaultStatusNameList.size())
                 .mapToObj(i -> StatusTable.builder()
@@ -31,11 +32,11 @@ public class StatusTableUtil {
 
         if (additionalStatusTables != null) {
             statusTableList.addAll(
-                    additionalStatusTables.entrySet()
+                    additionalStatusTables
                             .stream()
-                            .map(entry -> StatusTable.builder()
-                                    .name(entry.getKey())
-                                    .displayOrder(entry.getValue())
+                            .map(value -> StatusTable.builder()
+                                    .name(value)
+                                    .displayOrder(additionalStatusTables.indexOf(value) + 4)
                                     .board(board)
                                     .taskList(new ArrayList<>())
                                     .build()).toList()
@@ -120,5 +121,20 @@ public class StatusTableUtil {
 
     public boolean isUniqueStatusName(String name, Long boardId) {
         return repository.existsByNameAndBoardId(name, boardId);
+    }
+
+    public void updateStatusTables(Board board, List<AdditionalTablesDto> additionalStatusList) {
+        List<StatusTable> statusTableList = board.getStatusTableList();
+        for (StatusTable table : statusTableList) {
+            String tableName = table.getName();
+            if (additionalStatusList.stream().map(AdditionalTablesDto::getName).toList().contains(tableName)) {
+                int newDisplayOrder = additionalStatusList.indexOf() + 4;
+                if (newDisplayOrder == table.getDisplayOrder()) {
+                    continue;
+                }
+                table.setDisplayOrder(newDisplayOrder);
+            }
+        }
+        //TODO: THIS
     }
 }

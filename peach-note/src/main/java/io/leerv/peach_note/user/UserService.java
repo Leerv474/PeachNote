@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -112,6 +113,14 @@ public class UserService {
         User authenticatedUser = (User) authentication.getPrincipal();
         User user = repository.findById(authenticatedUser.getId())
                 .orElseThrow(() -> new UsernameNotFoundException(("User not found")));
-        return SimpleUserDto.builder().userId(user.getId()).username(user.getName()).build();
+        return SimpleUserDto.builder()
+                .userId(user.getId())
+                .username(user.getName())
+                .build();
+    }
+
+    public List<Long> usersExist(List<String> usernames) {
+        List<User> userList = repository.findAllByUsername(usernames);
+        return userList.stream().map(User::getId).toList();
     }
 }

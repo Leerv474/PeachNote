@@ -12,6 +12,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setBoardId,
   sidebarOpen,
   openBoardSettingsWindow,
+  boardListReload
 }) => {
   const handleCreateBoard = () => {
     setShowCreateBoard(true);
@@ -26,7 +27,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       setBoardList(boards);
     };
     fetchBoards();
-  }, []);
+  }, [boardListReload]);
 
   return (
     <>

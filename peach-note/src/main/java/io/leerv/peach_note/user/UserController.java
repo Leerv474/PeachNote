@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,8 +21,7 @@ public class UserController {
     public ResponseEntity<SimpleUserDto> getUsername(
             Authentication authentication
     ) {
-        return ResponseEntity.ok(service.getUsername(authentication
-        ));
+        return ResponseEntity.ok(service.getUsername(authentication));
     }
 
     @PostMapping("/rename")
@@ -78,5 +78,16 @@ public class UserController {
     ) {
         service.deleteUser(authentication, request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/users_exist")
+    public ResponseEntity<List<Long>> usersExist(
+            @Valid @RequestBody UsersExistRequest request,
+            Authentication authentication
+
+    ) {
+        return ResponseEntity.ok(
+                service.usersExist(request.getUsernames())
+        );
     }
 }

@@ -42,9 +42,6 @@ application:
     activation-url: http://localhost:8088/
     activation-token-length: 6
     sender-email: peach_note@mail.com
-  file:
-    upload:
-      photos-output-path: ./uploads
   frontend:
     allowed-origins:
       - http://localhost:3000

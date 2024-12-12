@@ -3,4 +3,5 @@ export default interface SidebarProps {
   sidebarOpen: boolean;
   openBoardSettingsWindow: (id: number) => void;
   setBoardId: React.Dispatch<React.SetStateAction<number>>;
+  boardListReload: number;
 }

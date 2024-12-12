@@ -18,9 +18,11 @@ export const Dashboard: React.FC = () => {
   const [boardId, setBoardId] = useState(-1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // triggers
+  //NOTE: triggers
   const [tableReload, triggerTableReload] = useState(0);
-  // windows
+  const [boardListReload, triggerBoardListReload] = useState(0);
+
+  //NOTE: windows
   const [showCreateBoardWindow, setShowCreateBoard] = useState(false);
   const [showCreateTaskWindow, setShowCreateTask] = useState(false);
 
@@ -71,6 +73,7 @@ export const Dashboard: React.FC = () => {
           sidebarOpen={sidebarOpen}
           setShowCreateBoard={setShowCreateBoard}
           setBoardId={setBoardId}
+          boardListReload={boardListReload}
           openBoardSettingsWindow={openBoardSettingsWindow}
         />
         <Board
@@ -82,7 +85,11 @@ export const Dashboard: React.FC = () => {
           tableReload={tableReload}
         />
         {showCreateBoardWindow ? (
-          <CreateBoardWindow setShowCreateBoard={setShowCreateBoard} />
+          <CreateBoardWindow
+            setShowCreateBoard={setShowCreateBoard}
+            setBoardId={setBoardId}
+            triggerBoardListReload={triggerBoardListReload}
+          />
         ) : null}
         {showCreateTaskWindow ? (
           <CreateTaskWindow
@@ -104,6 +111,7 @@ export const Dashboard: React.FC = () => {
           <BoardSettingsWindow
             settingsBoardId={settingsBoardId}
             setShowBoardSettingsWindow={setShowBoardSettingsWindow}
+            triggerBoardListReload={triggerBoardListReload}
           />
         ) : null}
       </div>

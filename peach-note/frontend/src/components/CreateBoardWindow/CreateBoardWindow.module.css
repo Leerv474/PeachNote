@@ -7,53 +7,6 @@
   }
 }
 
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0); /* End at original position */
-  }
-}
-
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    transform: translateY(-100%); /* End at original position */
-  }
-}
-
-.window_container {
-  position: absolute;
-  height: 100vh;
-  width: 100vw;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  z-index: 10;
-}
-
-.window {
-  height: 80%;
-  width: 60%;
-  border-radius: 20px;
-  background-color: var(--primary-color10);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  padding: 10px;
-  gap: 10px;
-  transform: translateY(100%);
-  opacity: 0;
-  animation: fadeIn 0.3s ease-in-out forwards;
-}
-
-.window_closing {
-  opacity: 1;
-  transform: translateY(0);
-  animation: fadeOut 0.3s ease-in-out forwards;
-}
-
 .top_bar {
   height: 60px;
   display: flex;
@@ -117,28 +70,53 @@
   scrollbar-width: none; /* Options: auto, thin, none */
 }
 
-.tables_list button {
-  border: none;
-  background-color: var(--accent-blue);
-  color: var(--text-light);
+.table_list_scroll_container {
+  display: flex;
+  flex-direction: column-reverse;
+  height: fit-content;
+  max-height: calc(100% - 50px);
+  overflow-y: scroll;
+  align-self: flex-start;
+  flex-grow: 0;
+  margin: 5px 0;
+  gap: 5px;
+}
+
+.add_table_container {
   width: 100%;
+  background-color: var(--accent-blue);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  padding: 0 10px;
+}
+
+.add_table_container input {
+  width: 100%;
+  background: none;
+  outline: none;
+  border: none;
+  padding: 5px;
+  font-size: 18px;
+}
+.add_table_container button {
+  border: none;
+  padding: 5px;
+  background: none;
+  color: var(--text-light);
   font-size: 20px;
   height: 40px;
   border-radius: 10px;
   cursor: pointer;
-  transition:
-    border-block 0.3s ease,
-    background-color 0.2s ease,
-    color 0.2s ease;
+  transition: color 0.2s ease;
 }
 
-.tables_list button:hover {
-  border-block: 2px solid var(--secondary-color);
+.add_table_container button:hover {
+  color: var(--accent-green60);
 }
 
-.tables_list button:active {
-  background-color: var(--accent-blue60);
-  color: var(--accent-blue60);
+.add_table_container button:active {
+  color: var(--text-light);
 }
 
 .static {
@@ -175,38 +153,61 @@
   flex-direction: row;
   border-bottom: 1px solid var(--base);
   border-radius: 10px;
-  margin: 5px 0;
   height: 0;
+  padding: 0 5px;
   background-color: var(--accent-blue60);
   animation: popOut 0.3s ease-in-out forwards;
   transition: height 0.3s ease;
   justify-content: right;
+  flex-grow: 0;
+  overflow: hidden;
 }
 
-.new_table_item input {
-  border: none;
+.new_table_item p {
   margin: 5px;
   padding: 5px;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
   background-color: var(--accent-blue60);
-  outline: none;
-  border-bottom: 1px solid var(--accent-blue);
   font-size: 18px;
   width: 100%;
   justify-content: center;
 }
 
-.new_table_item button {
+.move_buttons_container {
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
+
+.move_buttons_container button {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.move_buttons_container button:hover {
+  color: var(--accent-green60)
+}
+
+.new_table_item .remove_button {
   width: 20px;
   height: 100%;
   background: none;
   color: var(--accent-red70);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 20px;
 }
 
-.new_table_item button:hover {
+.new_table_item .remove_button:hover {
   border-block: none;
   color: var(--accent-red);
 }
-.new_table_item button:active {
+.new_table_item .remove_button:active {
   color: var(--accent-red70);
 }
 
@@ -350,4 +351,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.plus_icon {
+  height: 100%;
 }

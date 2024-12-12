@@ -4,23 +4,139 @@ import classNames from "classnames";
 import CreateBoardWindowProps from "./props/CreateBoardWindowProps";
 import { ModelWindow } from "../ui/ModelWindow/ModelWindow";
 import { ActionButton } from "../ui/ActionButton/ActionButton";
+import UserService from "../../services/UserService";
+import BoardService from "../../services/BoardService";
+import IBoardCreateRequest from "../../interfaces/IBoardCreateRequest";
+import { FaPlus } from "react-icons/fa";
+import { TbArrowBadgeDownFilled, TbArrowBadgeUpFilled } from "react-icons/tb";
+import { IoIosRemoveCircle } from "react-icons/io";
+import IUserPermissionRequest from "../../interfaces/IUserPermissionRequest";
 
 export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
   setShowCreateBoard,
+  triggerBoardListReload,
+  setBoardId,
 }) => {
-  const [tableNameInputs, setTableNameInputs] = useState<string[]>([]);
-  const [users, setUsers] = useState<string[]>([]);
+  const [tableNameList, setTableNameList] = useState<string[]>([]);
+  const [newTableName, setNewTableName] = useState("");
+  const [users, setUsers] = useState<Array<IUserPermissionRequest>>([]);
   const [newUserInfo, setNewUserInfo] = useState("");
+  const handlePermissionUpdate = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    key: number,
+    username: string,
+  ) => {
+    const updatedPermissionValue = Number(e.target.value);
+
+    const newValue = {
+      username: username || "giganoone",
+      permissionLevel: updatedPermissionValue,
+    };
+
+    setUsers((prevValues) =>
+      prevValues.map((value, i) => (i === key ? newValue : value)),
+    );
+  };
+
+  const moveUp = (index: number, items: Array<any>) => {
+    if (index > 0) {
+      const updatedItems = [...items];
+      [updatedItems[index], updatedItems[index - 1]] = [
+        updatedItems[index - 1],
+        updatedItems[index],
+      ];
+      return updatedItems;
+    }
+  };
+
+  const moveDown = (index: number, items: Array<any>) => {
+    if (index < items.length - 1) {
+      const updatedItems = [...items];
+      [updatedItems[index], updatedItems[index + 1]] = [
+        updatedItems[index + 1],
+        updatedItems[index],
+      ];
+      return updatedItems;
+    }
+  };
 
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-  const addInput = () => {
-    setTableNameInputs([...tableNameInputs, ""]);
-  };
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   const addUser = () => {
-    setUsers([...users, newUserInfo]);
+    setUsers([...users, { username: newUserInfo, permissionLevel: 1 }]);
     setNewUserInfo("");
+  };
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [disappear, setDisappear] = useState(false);
+  const handleMessageDisappearAnimation = () => {
+    setTimeout(() => {
+      setDisappear(true);
+    }, 1000);
+    setTimeout(() => {
+      setErrorMessage("");
+      setSuccessMessage("");
+      setDisappear(false);
+    }, 1300);
+  };
+
+  const validateBoardName = (tableName: string | undefined) => {
+    if (tableName) {
+      if (tableName.length >= 2 && tableName.length <= 32) {
+        return true;
+      }
+      if (tableName.length < 2) {
+        setErrorMessage("board name is too short");
+      }
+      if (tableName.length > 32) {
+        setErrorMessage("board name is too long");
+      }
+      handleMessageDisappearAnimation();
+      return false;
+    } else {
+      setErrorMessage("board name required");
+      handleMessageDisappearAnimation();
+      return false;
+    }
+  };
+
+  const validateTableNames = () => {
+    const invalid = tableNameList.some(
+      (item, index, self) => self.indexOf(item) !== index || item === "",
+    );
+    if (invalid) {
+      setErrorMessage("duplicate tables are not allowed");
+      handleMessageDisappearAnimation();
+    }
+    return invalid;
+  };
+
+  const handleBoardCreate = async () => {
+    const boardName = titleInputRef.current?.value;
+    if (!validateBoardName(boardName) || validateTableNames()) {
+      return;
+    }
+    try {
+      const boardRequest: IBoardCreateRequest = {
+        name: boardName || "",
+        additionalStatusList: tableNameList.reverse() || null,
+        userList: users || null,
+      };
+      const response = await BoardService.create(boardRequest);
+      const boardData = response.data;
+      triggerBoardListReload((prev) => prev + 1);
+      setBoardId(boardData.boardId);
+      setShowCreateBoard(false);
+    } catch (error: any) {
+      const errorMessage = error.response;
+      setErrorMessage(
+        errorMessage?.error || errorMessage.businessError || "unexpected error",
+      );
+      handleMessageDisappearAnimation();
+    }
   };
 
   useEffect(() => {
@@ -36,10 +152,16 @@ export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
 
   return (
     <>
-      <ModelWindow setShowWindow={setShowCreateBoard}>
+      <ModelWindow
+        setShowWindow={setShowCreateBoard}
+        errorMessage={errorMessage}
+        successMessage={successMessage}
+        disappear={disappear}
+      >
         <div className={classNames(style.top_bar)}>
           <input
             type="text"
+            ref={titleInputRef}
             placeholder={"board name"}
             className={classNames(style.title_input)}
           />
@@ -49,34 +171,68 @@ export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
             <p>table options</p>
             <div className={classNames(style.options)}>
               <div className={classNames(style.tables_list)}>
-                {tableNameInputs.map((placeholder, index) => (
-                  <div key={index} className={classNames(style.new_table_item)}>
-                    <input
-                      type="text"
-                      onChange={(e) => {
-                        setTableNameInputs((prev) =>
-                          prev.map((value, i) => {
-                            if (i !== index) return value;
-                            value = e.target.value;
-                            return value;
-                          }),
-                        );
-                      }}
-                      placeholder="status name"
-                      value={tableNameInputs[index]}
-                    />
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (tableNameInputs.lastIndexOf("") !== -1 && tableNameInputs.length !== 0)
-                      return;
-                    addInput();
-                  }}
-                >
-                  new
-                </button>
+                <div className={classNames(style.add_table_container)}>
+                  <input
+                    type="text"
+                    placeholder="status name"
+                    value={newTableName}
+                    onChange={(e) => setNewTableName(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (newTableName === "") {
+                        return;
+                      }
+                      setTableNameList([...tableNameList, newTableName]);
+                      setNewTableName("");
+                    }}
+                  >
+                    <FaPlus className={classNames(style.plus_icon)} />
+                  </button>
+                </div>
+                <div className={classNames(style.table_list_scroll_container)}>
+                  {tableNameList.map((name, key) => (
+                    <div key={key} className={classNames(style.new_table_item)}>
+                      <p>{name}</p>
+                      <div className={classNames(style.move_buttons_container)}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setTableNameList(
+                              moveDown(key, tableNameList) || tableNameList,
+                            );
+                          }}
+                        >
+                          <TbArrowBadgeUpFilled />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setTableNameList(
+                              moveUp(key, tableNameList) || tableNameList,
+                            );
+                          }}
+                        >
+                          <TbArrowBadgeDownFilled />
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        className={classNames(style.remove_button)}
+                        onClick={() => {
+                          setTableNameList(
+                            tableNameList.filter(
+                              (value, index) => index !== key,
+                            ),
+                          );
+                        }}
+                      >
+                        <IoIosRemoveCircle />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className={classNames(style.tables_list, style.static)}>
                 <div className={classNames(style.table_item_static)}>
@@ -115,7 +271,7 @@ export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
                     e.key === "Enter" && newUserInfo !== "" && addUser()
                   }
                 >
-                  add
+                  <FaPlus className={classNames(style.plus_icon)} />
                 </button>
               </div>
               <div
@@ -124,10 +280,19 @@ export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
               >
                 {users.map((userInfo, key) => (
                   <div key={key} className={classNames(style.user_item)}>
-                    <p>{userInfo}</p>
-                    <select defaultValue="viewer">
-                      <option value="viewer">viewer</option>
-                      <option value="editor">editor</option>
+                    <p>{userInfo?.username}</p>
+                    <select
+                      defaultValue={userInfo.permissionLevel}
+                      onChange={(e) => {
+                        handlePermissionUpdate(
+                          e,
+                          key,
+                          userInfo?.username || "giganoone",
+                        );
+                      }}
+                    >
+                      <option value="1">viewer</option>
+                      <option value="2">editor</option>
                     </select>
                     <button
                       type="button"
@@ -145,7 +310,7 @@ export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
         </div>
         <div className={classNames(style.bottom_bar)}>
           <div className={classNames(style.button_container)}>
-            <ActionButton label="create" onClick={() => {}} />
+            <ActionButton label="create" onClick={handleBoardCreate} />
           </div>
         </div>
       </ModelWindow>

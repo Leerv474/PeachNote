@@ -87,7 +87,7 @@ export const ActivationWindow: React.FC<ActivationWindowProps> = ({
                       setError("Incorrect code format");
                     } else {
                       store.activateAccount(
-                        Number(stringCode),
+                        stringCode,
                         refs.current,
                         clearInputs,
                         setError,

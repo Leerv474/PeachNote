@@ -1,17 +1,16 @@
 package io.leerv.peach_note.board;
 
-import io.leerv.peach_note.board.dto.BoardCreateRequest;
-import io.leerv.peach_note.board.dto.BoardCreateResponse;
-import io.leerv.peach_note.board.dto.BoardDto;
-import io.leerv.peach_note.board.dto.BoardSimpleDto;
+import io.leerv.peach_note.board.dto.*;
 import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.exceptions.OperationNotPermittedException;
 import io.leerv.peach_note.exceptions.RecordNotFound;
 import io.leerv.peach_note.permission.BoardPermissionUtil;
 import io.leerv.peach_note.project.ProjectUtil;
+import io.leerv.peach_note.statusTable.StatusTable;
 import io.leerv.peach_note.statusTable.StatusTableUtil;
 import io.leerv.peach_note.user.User;
 import io.leerv.peach_note.user.UserRepository;
+import io.leerv.peach_note.user.dto.UserPermissionDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,7 +36,19 @@ public class BoardService {
 
         repository.save(board);
         boardPermissionUtil.grantCreatorPermissions(authenticatedUser, board);
-        statusTableUtil.createStatusTables(board, request.getAdditionalStatusMap());
+        if (request.getUserList() == null) {
+            return boardMapper.mapToBoardCreateResponse(board);
+        }
+        for (UserPermissionDto dto : request.getUserList()) {
+            User user = userRepository.findUserByUsername(dto.getUsername()).orElseThrow(() -> new RecordNotFound("User not found"));
+            if (dto.getPermissionLevel() == 1) {
+                boardPermissionUtil.grantViewerPermissions(user, board);
+            }
+            if (dto.getPermissionLevel() == 2) {
+                boardPermissionUtil.grantEditorPermissions(user, board);
+            }
+        }
+        statusTableUtil.createStatusTables(board, request.getAdditionalStatusList());
 
         return boardMapper.mapToBoardCreateResponse(board);
     }
@@ -197,5 +208,29 @@ public class BoardService {
     public List<BoardSimpleDto> list(User user) {
         List<Board> boardList = repository.findAllByUserId(user.getId());
         return boardList.stream().map(boardMapper::mapToBoardSimpleDto).toList();
+    }
+
+    public BoardDataResponse findData(Long boardId, User authenticatedUser) {
+        if (!boardPermissionUtil.userHasAccess(authenticatedUser.getId(), boardId)) {
+            throw new OperationNotPermittedException("User does not have the rights to view this board");
+        }
+        Board board = repository.findById(boardId).orElseThrow(() -> new RecordNotFound("Board not found"));
+        return boardMapper.mapToBoardDataDto(board, authenticatedUser.getId());
+    }
+
+    public BoardUpdateResponse update(BoardUpdateRequest request, User authenticatedUser) {
+        if (!boardPermissionUtil.userIsCreator(authenticatedUser.getId(), request.getBoardId())) {
+            throw new OperationNotPermittedException("User does not have the rights to view this board");
+        }
+        Board board = repository.findById(request.getBoardId())
+                .orElseThrow(() -> new RecordNotFound("Board not found"));
+        statusTableUtil.updateStatusTables(board, request.getAdditionalStatusList());
+        boardPermissionUtil.updatePermissions(board, request.getUserList());
+        board.setName(request.getName());
+        repository.save(board);
+        return BoardUpdateResponse.builder()
+                .boardId(board.getId())
+                .name(board.getName())
+                .build();
     }
 }

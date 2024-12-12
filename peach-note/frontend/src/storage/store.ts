@@ -51,7 +51,7 @@ export default class Store {
   }
 
   async activateAccount(
-    code: number,
+    code: string,
     refs: (HTMLInputElement | null)[],
     clearInputs: () => void,
     setError: (error: string) => void,
@@ -70,6 +70,16 @@ export default class Store {
         refs[0].focus();
       }
       setError(error.response.data.error);
+    }
+  }
+
+  async loadUser() {
+    try {
+      const response = await UserService.getUsername();
+      this.user = response.data; 
+      this.isAuth = true;
+    } catch (error: any) {
+      this.isAuth = false;
     }
   }
 

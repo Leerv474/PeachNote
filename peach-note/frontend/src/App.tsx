@@ -11,21 +11,24 @@ function App() {
   const { store } = useContext(Context);
 
   //  TODO: reload behaviour
-//  useEffect (() => {
-//if (localStorage.getItem("accessToken")) {
-//            store.checkAuthorization();
-//        }
-//  }, [])
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      store.loadUser();
+    }
+  }, []);
 
-  if (store.isAuth) {
+  if (!store.isAuth) {
     return (
       <div className="root">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/auth" element={<Navigate to="/profile" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/" element={<WelcomePage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route
+              path="/dashboard"
+              element={<Navigate to="/auth" replace />}
+            />
+            <Route path="/profile" element={<Navigate to="/auth" replace />} />
           </Routes>
         </BrowserRouter>
       </div>
@@ -36,10 +39,10 @@ function App() {
     <div className="root">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/dashboard" element={<Navigate to="/auth" replace />} />
-          <Route path="/profile" element={<Navigate to="/auth" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/auth" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </BrowserRouter>
     </div>

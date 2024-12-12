@@ -12,7 +12,7 @@ export default class UserService {
     });
   }
 
-  static async activateAccount(code: number) {
+  static async activateAccount(code: string) {
     return await $api.get(`/auth/activate_account?token=${code}`);
   }
 
@@ -24,5 +24,13 @@ export default class UserService {
 
   static async logout() {
     return await $api.delete("/user/logout");
+  }
+  static async usersExist(users: Array<string>) {
+    const response = await $api.post<Array<number>>("/user/users_exist", { ...users });
+    return response;
+  }
+
+  static async getUsername() {
+    return await $api.get<IUser>("/user/get_username")
   }
 }

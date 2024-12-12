@@ -1,6 +1,4 @@
 import axios from "axios";
-import IJwtAccessTokens from "../interfaces/IJwtTokens";
-
 export const API_URL = "http://localhost:8088/api/v1";
 
 const $api = axios.create({
@@ -28,14 +26,14 @@ $api.interceptors.response.use(
   (config) => config,
   async (error) => {
     if (
-      error.response.status === 403 &&
+      error.response.status === 401 &&
       error.config &&
       !error.config._isRetry
     ) {
       const originalRequest = error.config;
       originalRequest._isRetry = true;
       try {
-        const response = await axios.get<IJwtAccessTokens>(
+        const response = await axios.get(
           `${API_URL}/auth/update_tokens`,
           {
             withCredentials: true,

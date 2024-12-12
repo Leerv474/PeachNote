@@ -1,5 +1,6 @@
 package io.leerv.peach_note.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import org.springframework.http.HttpStatus;
@@ -118,5 +119,12 @@ public class GlobalExceptionHandler {
                                 .error(exception.getMessage())
                                 .build()
                 );
+    }
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ExceptionDto> handleException(ExpiredJwtException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ExceptionDto.builder()
+                        .error("jwt token expired")
+                        .build());
     }
 }

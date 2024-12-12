@@ -60,74 +60,34 @@ public class BoardController {
         );
     }
 
+    @GetMapping("/view_data/{boardId}")
+    public ResponseEntity<BoardDataResponse> viewData(
+            @PathVariable Long boardId,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                service.findData(boardId, user)
+        );
+    }
+
     @GetMapping("/delete")
     public ResponseEntity<?> delete(
-            @RequestParam Long bookId,
+            @RequestParam Long boardId,
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();
-        service.delete(bookId, user);
+        service.delete(boardId, user);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/addUsers")
-    public ResponseEntity<?> addUsers(
-            @Valid @RequestBody BoardUsersPermissionsRequest request,
+    @PostMapping("/update")
+    public ResponseEntity<BoardUpdateResponse> update(
+            @Valid @RequestBody BoardUpdateRequest request,
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();
-        service.addUsers(user, request.getBoardId(), request.getUsersPermissions());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/removeUsers")
-    public ResponseEntity<?> removeUsers(
-            @Valid @RequestBody BoardRemoveUsersRequest request,
-            Authentication authentication
-    ) {
-        User user = (User) authentication.getPrincipal();
-        service.removeUsers(user, request.getBoardId(), request.getUserIdList());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/changeUsers")
-    public ResponseEntity<?> changeUserPermissions(
-            @Valid @RequestBody BoardUsersPermissionsRequest request,
-            Authentication authentication
-    ) {
-        User user = (User) authentication.getPrincipal();
-        service.changeUserPermissions(user, request.getBoardId(), request.getUsersPermissions());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/addTables")
-    public ResponseEntity<?> addTables(
-            @Valid @RequestBody BoardTablesMapRequest request,
-            Authentication authentication
-    ) {
-        User user = (User) authentication.getPrincipal();
-        service.addTables(user, request.getBoardId(), request.getStatusTableMap());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/removeTables")
-    public ResponseEntity<?> removeTables(
-            @Valid @RequestBody BoardRemoveTablesRequest request,
-            Authentication authentication
-    ) {
-        User user = (User) authentication.getPrincipal();
-        service.removeTables(user, request.getBoardId(), request.getRemovedTablesList());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/updateTablesOrder")
-    public ResponseEntity<?> updateTablesOrder(
-            @Valid @RequestBody BoardTableUpdateRequest request,
-            Authentication authentication
-    ) {
-        User user = (User) authentication.getPrincipal();
-        service.updateTablesOrder(user, request.getBoardId(), request.getStatusTableMap());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(service.update(request, user));
     }
 
 }

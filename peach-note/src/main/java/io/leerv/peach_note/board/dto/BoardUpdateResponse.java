@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BoardCreateResponse {
+public class BoardUpdateResponse {
     private Long boardId;
     private String name;
 }

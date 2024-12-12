@@ -25,4 +25,5 @@ public class BoardUtil {
         return repository.findById(boardId)
                 .orElseThrow(() -> new RecordNotFound("Board not found"));
     }
+
 }
