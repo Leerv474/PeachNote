@@ -39,7 +39,7 @@ application:
       access-expiration: 9000000
       refresh-expiration: 2592000000
   mailing:
-    activation-url: http://localhost:8088/
+    activation-url: http://localhost:8088/api/v1/auth/
     activation-token-length: 6
     sender-email: peach_note@mail.com
   frontend:

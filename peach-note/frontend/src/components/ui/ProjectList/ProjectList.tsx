@@ -1,33 +1,33 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./ProjectList.module.css";
 import classNames from "classnames";
 import { TiArrowSortedUp } from "react-icons/ti";
 import { ProjectItem } from "../ProjectItem/ProjectItem";
 import ProjectListProps from "./props/ProjectListProps";
 import IProjectItem from "../../../interfaces/IProjectItem";
-import { Context } from "../../..";
+import ProjectService from "../../../services/ProjectService";
 
 export const ProjectList: React.FC<ProjectListProps> = ({
   boardId,
   openProjectWindow,
+  projectListReload,
 }) => {
   const [listExpanded, setListExpanded] = useState(false);
 
-  const { store } = useContext(Context);
   const [projectList, setProjectList] = useState<Array<IProjectItem>>();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await store.listProjects(boardId);
-      setProjectList(data);
-    };
-    if (boardId < 0) {
-      fetchData();
+    if (boardId <= 0) {
+      return;
     }
+    const fetchData = async () => {
+      const response = await ProjectService.listAllByBoard(boardId);
+      setProjectList(response.data);
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [boardId, projectListReload]);
 
-  // TODO: replce with actual data
   return (
     <>
       <div
@@ -42,6 +42,9 @@ export const ProjectList: React.FC<ProjectListProps> = ({
         >
           <div
             onClick={() => {
+              if (boardId <= 0) {
+                return;
+              }
               setListExpanded(!listExpanded);
             }}
             className={classNames(style.expand_button, {

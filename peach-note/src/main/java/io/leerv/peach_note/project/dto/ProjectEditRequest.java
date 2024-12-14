@@ -20,8 +20,5 @@ public class ProjectEditRequest {
     @Size(max = 512, message = "description max size is 512 characters")
     private String description;
     @Future(message = "deadline should be in the future, you know...")
-    private LocalDate deadLine;
-    @Min(value = 0, message = "id cannot be less than 0")
-    @NotNull(message = "board id is required")
-    private Long boardId;
+    private LocalDate deadline;
 }

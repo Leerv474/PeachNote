@@ -37,6 +37,7 @@ public class TaskMapper {
                 .taskId(task.getId())
                 .title(task.getTitle())
                 .priority(taskUtil.calculatePriority(task))
+                .deadline(task.getDeadline())
                 .statusTable(statusTableMapper.mapToStatusTableItemDto(task.getStatusTable()))
                 .build();
     }

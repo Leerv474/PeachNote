@@ -112,7 +112,7 @@ public class AuthenticationService {
     public Map<String, String> updateTokens(String refreshToken) {
         jwtTokenService.validateRefreshToken(refreshToken);
         String username = jwtTokenService.extractUsername(refreshToken);
-        User user = userRepository.findUserByUsername(username)
+        User user = userRepository.findUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found, refresh token invalid"));
         String newAccessToken = jwtTokenService.generateAccessToken(user);
         String newRefreshToken = jwtTokenService.generateRefreshToken(user);

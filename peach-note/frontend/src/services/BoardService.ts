@@ -30,4 +30,8 @@ export default class BoardService {
   static async viewBoardData(boardId: number) {
     return await $api.get<IBoardData>(`/board/view_data/${boardId}`);
   }
+
+  static async delete(boardId: number) {
+    return await $api.get(`/board/delete/${boardId}`);
+  }
 }

@@ -38,4 +38,36 @@ public interface StatusTableRepository extends JpaRepository<StatusTable, Long> 
             and st.board.id = :boardId
             """)
     boolean existsByNameAndBoardId(String name, Long boardId);
+
+    @Query("""
+            select st
+            from StatusTable st
+            where st.board.id = :boardId
+            and st.name = 'Await'
+            """)
+    Optional<StatusTable> findAwaitByBoardId(Long boardId);
+
+    @Query("""
+            select st
+            from StatusTable st
+            where st.board.id = :boardId
+            and st.name = 'Delayed'
+            """)
+    Optional<StatusTable> findDelayedByBoardId(Long boardId);
+
+    @Query("""
+            select st
+            from StatusTable st
+            where st.board.id = :boardId
+            and st.name = 'Current'
+            """)
+    Optional<StatusTable> findCurrentByBoardId(Long boardId);
+
+    @Query("""
+            select st
+            from StatusTable st
+            where st.board.id = :boardId
+            and st.displayOrder = 4
+            """)
+    Optional<StatusTable> findFirstCompletionStatus(Long boardId);
 }

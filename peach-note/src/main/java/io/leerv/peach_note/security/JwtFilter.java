@@ -1,5 +1,8 @@
 package io.leerv.peach_note.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.leerv.peach_note.exceptions.ExceptionDto;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,17 +47,30 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         accessToken = authHeaders.substring(7);
-        email = jwtTokenService.extractUsername(accessToken);
-        if (email == null || SecurityContextHolder.getContext().getAuthentication() != null) {
-            throw new AuthenticationException("Jwt token invalid");
-        }
+        try {
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        filterChain.doFilter(request, response);
+            email = jwtTokenService.extractUsername(accessToken);
+            if (email == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+                throw new AuthenticationException("Jwt token invalid");
+            }
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            filterChain.doFilter(request, response);
+        } catch (AuthenticationException | ExpiredJwtException e) {
+            response.setContentType("application/json");
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(
+                    new ObjectMapper().writeValueAsString(
+                            ExceptionDto.builder()
+                                    .error(e.getMessage())
+                                    .build()
+                    )
+            );
+        }
     }
 }

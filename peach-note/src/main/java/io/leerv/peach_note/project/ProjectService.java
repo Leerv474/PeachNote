@@ -65,8 +65,8 @@ public class ProjectService {
             project.setDescription(request.getDescription());
             changed = true;
         }
-        if (request.getDeadLine() != null) {
-            project.setDeadline(request.getDeadLine());
+        if (request.getDeadline() != null) {
+            project.setDeadline(request.getDeadline());
             changed = true;
         }
         if (!changed) {
@@ -122,7 +122,8 @@ public class ProjectService {
                 .description(project.getDescription())
                 .deadline(project.getDeadline())
                 .tasksAmount(project.getTaskList().size())
-                .finishedTasks(finishedTasks)
+                .finishedTasksAmount(finishedTasks)
+                .taskList(project.getTaskList().stream().map(taskMapper::mapToTaskItemDto).toList())
                 .build();
     }
 

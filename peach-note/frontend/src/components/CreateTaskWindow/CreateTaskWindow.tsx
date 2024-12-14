@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import style from "./CreateTaskWindow.module.css";
 import classNames from "classnames";
 import * as yup from "yup";
@@ -7,18 +7,23 @@ import { ModelWindow } from "../ui/ModelWindow/ModelWindow";
 import { ActionButton } from "../ui/ActionButton/ActionButton";
 import { useFormik } from "formik";
 import CreateTaskFormikProps from "./props/CreateTaskFormikProps";
-import { Context } from "../..";
 import ITaskDto from "../../interfaces/ITaskDto";
+import TaskService from "../../services/TaskService";
 
 export const CreateTaskWindow: React.FC<CreateTaskProps> = ({
   boardId,
   setShowCreateTask,
-  triggerTableReload: tableReloadTrigger,
+  createTaskProjectId,
+  createTaskProjectName,
+  triggerTableReload,
+  triggerTaskListReload,
+  openOrganizeTaskWindow,
 }) => {
   const [errorMessage, setError] = useState("");
   const [successMessage, setSuccess] = useState("");
   const [disappear, setDisappear] = useState(false);
-  const { store } = useContext(Context);
+  const [openOriganize, setOpenOrganize] = useState(false);
+
   const handleCreateFetch = async (values: CreateTaskFormikProps) => {
     let data: ITaskDto = {
       title: "unnamed",
@@ -29,10 +34,22 @@ export const CreateTaskWindow: React.FC<CreateTaskProps> = ({
     };
     data.title = values.title;
     data.description = values.description;
+    if (createTaskProjectId !== -1) {
+      data.projectId = createTaskProjectId;
+    }
     data.deadline = values.deadline ? new Date(values.deadline) : null;
     try {
-      await store.createTask(data);
-      tableReloadTrigger((prev) => prev + 1);
+      const response = await TaskService.create(data);
+      const taskData = response.data;
+      if (openOriganize) {
+        setShowCreateTask(false);
+        setOpenOrganize(false);
+        openOrganizeTaskWindow(taskData.taskId, taskData.title);
+      }
+      triggerTableReload((prev) => prev + 1);
+      if (createTaskProjectId !== -1) {
+        triggerTaskListReload((prev) => prev + 1);
+      }
       setSuccess("task created");
       setTimeout(() => {
         setDisappear(true);
@@ -42,7 +59,12 @@ export const CreateTaskWindow: React.FC<CreateTaskProps> = ({
         setDisappear(false);
       }, 1300);
     } catch (error: any) {
-      setError(error);
+      const errorResponse = error.response;
+      setError(
+        errorResponse?.error ||
+          errorResponse?.businessError ||
+          "unexpected error",
+      );
       setTimeout(() => {
         setDisappear(true);
       }, 1000);
@@ -104,7 +126,31 @@ export const CreateTaskWindow: React.FC<CreateTaskProps> = ({
     if (formik.isValid) {
       formik.submitForm();
     } else {
-      const message = formik.errors.title || formik.errors.description || formik.errors.deadline || "";
+      const message =
+        formik.errors.title ||
+        formik.errors.description ||
+        formik.errors.deadline ||
+        "";
+      setError(message);
+      setTimeout(() => {
+        setDisappear(true);
+      }, 1000);
+      setTimeout(() => {
+        setError("");
+        setDisappear(false);
+      }, 1300);
+    }
+  };
+  const handleOrganizeSubmit = () => {
+    if (formik.isValid) {
+      formik.submitForm();
+      setOpenOrganize(true);
+    } else {
+      const message =
+        formik.errors.title ||
+        formik.errors.description ||
+        formik.errors.deadline ||
+        "";
       setError(message);
       setTimeout(() => {
         setDisappear(true);
@@ -157,12 +203,19 @@ export const CreateTaskWindow: React.FC<CreateTaskProps> = ({
           />
         </div>
         <div className={classNames(style.bottom_bar)}>
-          <div className={classNames(style.create_button_container)}>
-            <ActionButton label="create" onClick={handleSubmit} />
+          <div className={classNames(style.buttons_container)}>
+            <div className={classNames(style.create_button_container)}>
+              <ActionButton label="create" onClick={handleSubmit} />
+            </div>
+            <div className={classNames(style.organize_button_container)}>
+              <ActionButton label="organize" onClick={handleOrganizeSubmit} />
+            </div>
           </div>
-          <div className={classNames(style.organize_button_container)}>
-            <ActionButton label="organize" onClick={() => {}} />
-          </div>
+          {createTaskProjectId !== -1 ? (
+            <div className={classNames(style.project)}>
+              <p>{createTaskProjectName}</p>
+            </div>
+          ) : null}
         </div>
       </ModelWindow>
     </>

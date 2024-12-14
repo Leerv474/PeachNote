@@ -11,6 +11,8 @@ import { TaskWindow } from "../../components/TaskWindow/TaskWindow";
 import { BoardSettingsWindow } from "../../components/BoardSettingsWindow/BoardSettingsWindow";
 import { Context } from "../..";
 import IBoard from "../../interfaces/IBoard";
+import { OrganizeWindow } from "../../components/OrganizeWindow/OrganizeWindow";
+import ITaskOrganizeData from "../../interfaces/ITaskOrganizeData";
 
 export const Dashboard: React.FC = () => {
   const { store } = useContext(Context);
@@ -21,10 +23,19 @@ export const Dashboard: React.FC = () => {
   //NOTE: triggers
   const [tableReload, triggerTableReload] = useState(0);
   const [boardListReload, triggerBoardListReload] = useState(0);
+  const [projectListReload, triggerProjectListReload] = useState(0);
+  const [taskListReload, triggerTaskListReload] = useState(0);
 
   //NOTE: windows
   const [showCreateBoardWindow, setShowCreateBoard] = useState(false);
   const [showCreateTaskWindow, setShowCreateTask] = useState(false);
+  const [createTaskProjectId, setCreateTaskProjectId] = useState(-1);
+  const [createTaskProjectName, setCreateTaskProjectName] = useState("");
+  const openCreateTaskWindow = (projectId: number, projectName: string) => {
+    setCreateTaskProjectId(projectId);
+    setCreateTaskProjectName(projectName);
+    setShowCreateTask(true);
+  };
 
   const [showProjectWindow, setShowProject] = useState(false);
   const [projectId, setProjectId] = useState(-1);
@@ -47,7 +58,17 @@ export const Dashboard: React.FC = () => {
     setShowBoardSettingsWindow(true);
   };
 
+  const [showOrganizeWindow, setShowOrganizeWindow] = useState(false);
+  const [organizeTaskData, setOrganizeTaskId] = useState<ITaskOrganizeData>();
+  const openOrganizeTaskWindow = (taskId: number, title: string, isTaskProject: boolean = false) => {
+    setOrganizeTaskId({ taskId: taskId, title: title, isTaskProject: isTaskProject});
+    setShowOrganizeWindow(true);
+  };
+
+  // NOTE: fetching
+
   const [boardData, setBoardData] = useState<IBoard>();
+  const [boardReload, triggerBoardReload] = useState(false);
 
   useEffect(() => {
     const fetchBoardData = async () => {
@@ -58,7 +79,7 @@ export const Dashboard: React.FC = () => {
       fetchBoardData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardId]);
+  }, [boardId, boardReload]);
 
   return (
     <>
@@ -78,11 +99,14 @@ export const Dashboard: React.FC = () => {
         />
         <Board
           sidebarOpen={sidebarOpen}
-          setShowCreateTask={setShowCreateTask}
+          openCreateTaskWindow={openCreateTaskWindow}
           openProjectWindow={openProjectWindow}
           openTaskWindow={openTaskWindow}
+          openOrganizeWindow={openOrganizeTaskWindow}
           boardData={boardData ?? null}
           tableReload={tableReload}
+          triggerTableReload={triggerTableReload}
+          projectListReload={projectListReload}
         />
         {showCreateBoardWindow ? (
           <CreateBoardWindow
@@ -91,27 +115,57 @@ export const Dashboard: React.FC = () => {
             triggerBoardListReload={triggerBoardListReload}
           />
         ) : null}
-        {showCreateTaskWindow ? (
-          <CreateTaskWindow
-            boardId={boardId}
-            setShowCreateTask={setShowCreateTask}
-            triggerTableReload={triggerTableReload}
-          />
-        ) : null}
         {showProjectWindow ? (
           <ProjectWindow
             projectId={projectId}
             setShowProject={setShowProject}
+            triggerProjectListReload={triggerProjectListReload}
+            triggerTableReload={triggerTableReload}
+            triggerTaskListReload={triggerTaskListReload}
+            taskListReload={taskListReload}
+            openTaskWindow={openTaskWindow}
+            openCreateTaskWindow={openCreateTaskWindow}
+            openOrganizeTaskWindow={openOrganizeTaskWindow}
           />
         ) : null}
         {showTaskWindow ? (
-          <TaskWindow taskId={taskId} setShowTaskWindow={setShowTaskWindow} />
+          <TaskWindow
+            taskId={taskId}
+            setShowTaskWindow={setShowTaskWindow}
+            openProjectWindow={openProjectWindow}
+            triggerTableReload={triggerTableReload}
+            triggerProjectListReload={triggerProjectListReload}
+            triggerTaskListReload={triggerTaskListReload}
+          />
         ) : null}
         {showBoardSettingsWindow ? (
           <BoardSettingsWindow
             settingsBoardId={settingsBoardId}
             setShowBoardSettingsWindow={setShowBoardSettingsWindow}
             triggerBoardListReload={triggerBoardListReload}
+            currentBoardId={boardId}
+            setCurrentBoardId={setBoardId}
+            triggerBoardReload={triggerBoardReload}
+          />
+        ) : null}
+        {showCreateTaskWindow ? (
+          <CreateTaskWindow
+            boardId={boardId}
+            createTaskProjectId={createTaskProjectId}
+            createTaskProjectName={createTaskProjectName}
+            setShowCreateTask={setShowCreateTask}
+            triggerTableReload={triggerTableReload}
+            openOrganizeTaskWindow={openOrganizeTaskWindow}
+            triggerTaskListReload={triggerTaskListReload}
+          />
+        ) : null}
+        {showOrganizeWindow ? (
+          <OrganizeWindow
+            taskData={organizeTaskData}
+            setShowOrganizeWindow={setShowOrganizeWindow}
+            triggerTableReload={triggerTableReload}
+            triggerProjectListReload={triggerProjectListReload}
+            triggerTaskListReload={triggerTaskListReload}
           />
         ) : null}
       </div>

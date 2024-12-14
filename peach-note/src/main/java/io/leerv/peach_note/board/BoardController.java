@@ -71,9 +71,9 @@ public class BoardController {
         );
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/delete/{boardId}")
     public ResponseEntity<?> delete(
-            @RequestParam Long boardId,
+            @PathVariable Long boardId,
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();

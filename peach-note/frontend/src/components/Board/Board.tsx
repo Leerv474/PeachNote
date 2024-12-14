@@ -1,23 +1,23 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import style from "./Board.module.css";
 import classNames from "classnames";
 import BoardProps from "./props/BoardProps";
 import { ActionButton } from "../ui/ActionButton/ActionButton";
 import { Table } from "../ui/Table/Table";
 import { ProjectList } from "../ui/ProjectList/ProjectList";
-import { Context } from "../..";
-import IBoard from "../../interfaces/IBoard";
 
 export const Board: React.FC<BoardProps> = ({
   sidebarOpen,
-  setShowCreateTask,
+  openCreateTaskWindow,
   openProjectWindow,
+  openOrganizeWindow,
   openTaskWindow,
   boardData,
   tableReload,
+  projectListReload,
+  triggerTableReload,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { store } = useContext(Context);
 
   return (
     <>
@@ -36,8 +36,11 @@ export const Board: React.FC<BoardProps> = ({
                       key={tableId}
                       tableId={tableId}
                       openTaskWindow={openTaskWindow}
+                      isFirstStatus={name === "Bucket"}
                       isLastStatus={name === "Done"}
                       tableReload={tableReload}
+                      openOrganizeWindow={openOrganizeWindow}
+                      triggerTableReload={triggerTableReload}
                     />
                   );
                 })
@@ -58,13 +61,14 @@ export const Board: React.FC<BoardProps> = ({
                     if (boardData === null) {
                       return;
                     }
-                    setShowCreateTask(true);
+                    openCreateTaskWindow(-1, "");
                   }}
                 />
               </div>
               <ProjectList
                 boardId={boardData?.boardId || 0}
                 openProjectWindow={openProjectWindow}
+                projectListReload={projectListReload}
               />
             </div>
           </div>

@@ -1,7 +1,6 @@
 import style from "./ProfilePage.module.css";
 import React, { useState } from "react";
 import classNames from "classnames";
-import { useLocation } from "react-router-dom";
 import { FaPencil } from "react-icons/fa6";
 import { FaSave } from "react-icons/fa";
 import { TiCancel } from "react-icons/ti";

@@ -15,19 +15,31 @@
   transition: transform 0.2s ease;
 }
 
-.task_item p {
+.title_container {
+  overflow: hidden;
+  width: 100%;
+  height: fit-content;
+  flex-grow: 1;
+  text-wrap: wrap;
+}
+
+.title {
   font-size: 14pt;
   color: var(--text-dark70);
   padding: 5px 10px 10px 10px;
-  text-wrap: wrap;
+  height: fit-content;
   text-align: justify;
-  flex-grow: 1;
   margin-right: 40px;
+  flex-grow: 1;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .task_item .last_status {
   margin-right: 0;
-} 
+}
 
 .task_item:hover {
   transform: scale(1.01);
@@ -49,8 +61,7 @@
   top: 0;
   bottom: 0;
   right: 0;
-  transition:
-    background-color 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .arrow {

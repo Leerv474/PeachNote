@@ -1,9 +1,6 @@
 package io.leerv.peach_note.task;
 
-import io.leerv.peach_note.task.dto.TaskChangeStatusRequest;
-import io.leerv.peach_note.task.dto.TaskCreateRequest;
-import io.leerv.peach_note.task.dto.TaskDto;
-import io.leerv.peach_note.task.dto.TaskEditRequest;
+import io.leerv.peach_note.task.dto.*;
 import io.leerv.peach_note.user.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +16,7 @@ public class TaskController {
     private final TaskService service;
 
     @PostMapping("/create")
-    public ResponseEntity<TaskDto> create(
+    public ResponseEntity<TaskCreateResponse> create(
             @Valid @RequestBody TaskCreateRequest request,
             Authentication authentication
     ) {
@@ -40,6 +37,17 @@ public class TaskController {
         );
     }
 
+    @GetMapping("/view_data/{taskId}")
+    public ResponseEntity<TaskDataResponse> viewData(
+            @PathVariable Long taskId,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(
+            service.viewData(user, taskId)
+        );
+    }
+
     @PostMapping("/edit")
     public ResponseEntity<?> edit(
             @Valid @RequestBody TaskEditRequest request,
@@ -57,6 +65,36 @@ public class TaskController {
     ) {
         User user = (User) authentication.getPrincipal();
         service.convertToProject(user, taskId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/putInAwait/{taskId}")
+    public ResponseEntity<?> putInAwait(
+            @PathVariable Long taskId,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        service.putInAwait(user, taskId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/putInDelayed/{taskId}")
+    public ResponseEntity<?> putInDelayed(
+            @PathVariable Long taskId,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        service.putInDelayed(user, taskId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/putInCurrent/{taskId}")
+    public ResponseEntity<?> putInCurrent(
+            @PathVariable Long taskId,
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        service.putInCurrent(user, taskId);
         return ResponseEntity.ok().build();
     }
 

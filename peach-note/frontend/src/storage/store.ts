@@ -1,17 +1,12 @@
 import { makeAutoObservable } from "mobx";
 import IBoard from "../interfaces/IBoard";
 import IBoardItem from "../interfaces/IBoardItem";
-import IBoardList from "../interfaces/IBoardList";
-import IProjectItem from "../interfaces/IProjectItem";
 import ISignInRequest from "../interfaces/ISignInRequest";
 import ISignUpRequest from "../interfaces/ISignUpRequest";
 import ITable from "../interfaces/ITable";
-import ITaskDto from "../interfaces/ITaskDto";
 import IUser from "../interfaces/IUser";
 import BoardService from "../services/BoardService";
-import ProjectService from "../services/ProjectService";
 import TableService from "../services/TableService";
-import TaskService from "../services/TaskService";
 import UserService from "../services/UserService";
 
 export default class Store {
@@ -113,28 +108,6 @@ export default class Store {
       console.log(error.response?.error);
       console.log(error.response?.businessError);
       return undefined;
-    }
-  }
-
-  async listProjects(
-    boardId: number,
-  ): Promise<Array<IProjectItem> | undefined> {
-    try {
-      const response = await ProjectService.listAllByBoard(boardId);
-      return response.data;
-    } catch (error: any) {
-      console.log(error.response?.error);
-      console.log(error.response?.businessError);
-      return undefined;
-    }
-  }
-
-  async createTask(data: ITaskDto) {
-    try {
-      const response = await TaskService.create(data);
-      return response.data;
-    } catch (error: any) {
-      return "failed to create a task";
     }
   }
 }

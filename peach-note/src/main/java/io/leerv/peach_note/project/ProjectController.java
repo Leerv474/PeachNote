@@ -46,7 +46,7 @@ public class ProjectController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{projectId}/taskList")
+    @GetMapping("/task_list/{projectId}")
     public ResponseEntity<ProjectTaskListResponse> getTaskList(
             @PathVariable Long projectId,
             Authentication authentication
@@ -57,7 +57,7 @@ public class ProjectController {
         );
     }
 
-    @GetMapping("/{projectId}/progress")
+    @GetMapping("/progress/{projectId}")
     public ResponseEntity<ProjectProgressResponse> getProgress(
             @PathVariable Long projectId,
             Authentication authentication
@@ -68,7 +68,7 @@ public class ProjectController {
         );
     }
 
-    @GetMapping("/{projectId}/view")
+    @GetMapping("/view/{projectId}")
     public ResponseEntity<ProjectDto> view(
             @PathVariable Long projectId,
             Authentication authentication
@@ -79,7 +79,7 @@ public class ProjectController {
         );
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/{boardId}")
     public ResponseEntity<List<ProjectItemDto>> list(
             @PathVariable Long boardId,
             Authentication authentication

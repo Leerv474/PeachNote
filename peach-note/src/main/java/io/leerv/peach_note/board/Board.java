@@ -21,7 +21,7 @@ public class Board {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<BoardPermission> boardPermissionList;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)

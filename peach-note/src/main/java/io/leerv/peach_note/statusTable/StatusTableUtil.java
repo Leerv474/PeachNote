@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -125,16 +126,74 @@ public class StatusTableUtil {
 
     public void updateStatusTables(Board board, List<AdditionalTablesDto> additionalStatusList) {
         List<StatusTable> statusTableList = board.getStatusTableList();
-        for (StatusTable table : statusTableList) {
-            String tableName = table.getName();
-            if (additionalStatusList.stream().map(AdditionalTablesDto::getName).toList().contains(tableName)) {
-                int newDisplayOrder = additionalStatusList.indexOf() + 4;
-                if (newDisplayOrder == table.getDisplayOrder()) {
-                    continue;
-                }
-                table.setDisplayOrder(newDisplayOrder);
-            }
+        int displayOrderOffset = 4;
+
+        List<StatusTable> updatedTables = new ArrayList<>();
+        for (int i = 0; i < additionalStatusList.size(); i++) {
+            AdditionalTablesDto dto = additionalStatusList.get(i);
+            StatusTable table = (dto.getTableId() == -1)
+                    ? createNewTable(board, dto, i + displayOrderOffset)
+                    : updateExistingTable(dto, i + displayOrderOffset);
+            updatedTables.add(table);
         }
-        //TODO: THIS
+
+        StatusTable doneTable = statusTableList.stream()
+                .filter(table -> table.getName().equals("Done"))
+                .findFirst()
+                .orElseThrow(() -> new RecordNotFound("Board does not have Done table, which isn't possible"));
+        doneTable.setDisplayOrder(additionalStatusList.size() + displayOrderOffset);
+        updatedTables.add(doneTable);
+
+        repository.saveAll(updatedTables);
+
+        statusTableList = statusTableList.stream().filter(table -> table.getDisplayOrder() > 3 && table.getDisplayOrder() != doneTable.getDisplayOrder()).toList();
+        List<Long> updatedStatusIds = additionalStatusList.stream()
+                .map(AdditionalTablesDto::getTableId)
+                .filter(id -> id != -1)
+                .toList();
+        deleteTablesNotInList(statusTableList, updatedStatusIds);
+    }
+
+    private StatusTable createNewTable(Board board, AdditionalTablesDto dto, int displayOrder) {
+        return StatusTable.builder()
+                .board(board)
+                .name(dto.getName())
+                .taskList(Collections.emptyList())
+                .displayOrder(displayOrder)
+                .build();
+    }
+
+    private StatusTable updateExistingTable(AdditionalTablesDto dto, int displayOrder) {
+        StatusTable table = repository.findById(dto.getTableId())
+                .orElseThrow(() -> new RecordNotFound("Status table not found"));
+        table.setName(dto.getName());
+        table.setDisplayOrder(displayOrder);
+        return table;
+    }
+
+    private void deleteTablesNotInList(List<StatusTable> existingTables, List<Long> updatedStatusIds) {
+        List<Long> existingStatusIds = existingTables.stream()
+                .map(StatusTable::getId)
+                .toList();
+        List<Long> idsToDelete = existingStatusIds.stream()
+                .filter(id -> !updatedStatusIds.contains(id))
+                .toList();
+        repository.deleteAllByIdInBatch(idsToDelete);
+    }
+
+    public StatusTable findAwaitByBoardId(Long boardId) {
+        return repository.findAwaitByBoardId(boardId).orElseThrow(() -> new RecordNotFound("Await status not found, which isn't possible"));
+    }
+
+    public StatusTable findCurrentByBoardId(Long boardId) {
+        return repository.findCurrentByBoardId(boardId).orElseThrow(() -> new RecordNotFound("Current status not found, which isn't possible"));
+    }
+
+    public StatusTable findDelayedByBoardId(Long boardId) {
+        return repository.findDelayedByBoardId(boardId).orElseThrow(() -> new RecordNotFound("Delayed status not found, which isn't possible"));
+    }
+
+    public StatusTable findFirstCompletionStatus(Long boardId) {
+        return repository.findFirstCompletionStatus(boardId).orElseThrow(() -> new RecordNotFound("Completion statuses don't exist, internal error"));
     }
 }

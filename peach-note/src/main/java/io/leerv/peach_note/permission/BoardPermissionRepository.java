@@ -53,7 +53,7 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             where br.user.id = :userId
             and br.board.id = :boardId
             """)
-    boolean userPermissionExists(Long userId, Long boardId);
+    Optional<Boolean> userPermissionExists(Long userId, Long boardId);
 
     @Modifying
     @Query("""
@@ -63,4 +63,12 @@ public interface BoardPermissionRepository extends JpaRepository<BoardPermission
             AND br.board.id = :boardId
             """)
     void deleteByUserIdAndBoardId(Long userId, Long boardId);
+
+    @Query("""
+            select bp
+            from BoardPermission bp
+            where bp.board.id = :boardId
+            and bp.user.username = :username
+            """)
+    Optional<BoardPermission> findByBoardIdAndUsername(Long boardId, String username);
 }

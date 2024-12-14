@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./ProjectItem.module.css";
 import classNames from "classnames";
 import ProjectItemProps from "./props/ProjectItemProps";
@@ -7,25 +7,29 @@ export const ProjectItem: React.FC<ProjectItemProps> = ({
   projectId,
   title,
   tasksAmount,
-  finishedTasksAmount: tasksCompleted,
+  finishedTasksAmount,
   openProjectWindow,
 }) => {
   const [progressWidth, setProgressWidth] = useState(0);
 
   useEffect(() => {
-    setProgressWidth(tasksCompleted / tasksAmount);
-  }, [tasksAmount, tasksCompleted]);
+    if (tasksAmount === 0) {
+      setProgressWidth(0);
+      return;
+    }
+    setProgressWidth(finishedTasksAmount / tasksAmount);
+  }, [tasksAmount, finishedTasksAmount]);
 
   const handleOnClick = () => {
-    openProjectWindow(projectId)
+    openProjectWindow(projectId);
   };
   return (
     <>
       <div className={classNames(style.item_container)} onClick={handleOnClick}>
-        <p>{title}</p>
+        <p className={classNames(style.title)}>{title}</p>
         <div className={classNames(style.progress_bar_container)}>
           <p>
-            {tasksCompleted}/{tasksAmount}
+            {finishedTasksAmount}/{tasksAmount}
           </p>
           <progress
             value={progressWidth}

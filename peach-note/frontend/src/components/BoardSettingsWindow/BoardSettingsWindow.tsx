@@ -3,7 +3,6 @@ import style from "./BoardSettingsWindow.module.css";
 import classNames from "classnames";
 import { ModelWindow } from "../ui/ModelWindow/ModelWindow";
 import BoardSettignsWindowProps from "./props/BoardSettingsWindowProps";
-import IBoardCreateRequest from "../../interfaces/IBoardCreateRequest";
 import { ActionButton } from "../ui/ActionButton/ActionButton";
 import { FaPlus } from "react-icons/fa";
 import IUserPermissionRequest from "../../interfaces/IUserPermissionRequest";
@@ -12,11 +11,15 @@ import { IoIosRemoveCircle } from "react-icons/io";
 import BoardService from "../../services/BoardService";
 import IBoardUpdateRequest from "../../interfaces/IBoardUpdateRequest";
 import IAdditionalTableDto from "../../interfaces/IAdditionalTableDto";
+import { DeleteButton } from "../ui/DeleteButton/DeleteButton";
 
 export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
+  currentBoardId,
+  setCurrentBoardId,
   settingsBoardId,
   setShowBoardSettingsWindow,
   triggerBoardListReload,
+  triggerBoardReload,
 }) => {
   //NOTE: fetching data
   useEffect(() => {
@@ -24,14 +27,14 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
       try {
         const response = await BoardService.viewBoardData(settingsBoardId);
         const boardData = response.data;
-        setTableList(boardData.statusTableList);
+        setTableList(boardData.statusTableList.reverse());
         setUsers(boardData.userPermissionList || []);
         setCurrentUserPermissionLevel(
           boardData.currentUserPermissionLevel || 0,
         );
         setBoardName(boardData.name);
       } catch (error: any) {
-        const errorResponse = error.response;
+        const errorResponse = error.response.data;
         setErrorMessage(
           errorResponse?.error ||
             errorResponse?.businessError ||
@@ -41,6 +44,7 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [boardName, setBoardName] = useState("");
@@ -143,25 +147,49 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
     return invalid;
   };
 
+  const handleDeleteFetch = async () => {
+    try {
+      await BoardService.delete(settingsBoardId);
+      setSuccessMessage("board deleted");
+      triggerBoardListReload((prev) => prev + 1);
+      if (currentBoardId === settingsBoardId) {
+        setCurrentBoardId(-1);
+      }
+      handleMessageDisappearAnimation();
+      setShowBoardSettingsWindow(false);
+    } catch (error: any) {
+      const errorMessage = error.response.data;
+      setErrorMessage(
+        errorMessage?.error ||
+          errorMessage?.businessError ||
+          "unexpected error",
+      );
+      handleMessageDisappearAnimation();
+      triggerBoardListReload((prev) => prev + 1);
+    }
+  };
+
   const handleBoardSave = async () => {
     if (currentUserPermissionLevel !== 3) {
       setErrorMessage("only creator can edit board options");
       handleMessageDisappearAnimation();
       return;
     }
-    const boardName = titleInputRef.current?.value;
-    if (!validateBoardName(boardName) || validateTableNames()) {
+    const boardNameRequest = titleInputRef.current?.value || boardName;
+    if (!validateBoardName(boardNameRequest) || validateTableNames()) {
       return;
     }
     try {
       const boardRequest: IBoardUpdateRequest = {
         boardId: settingsBoardId,
-        name: boardName || "",
+        name: boardNameRequest || "",
         additionalStatusList: tableList.reverse() || null,
         userList: users || null,
       };
-      const response = await BoardService.save(boardRequest);
-      const boardData = response.data;
+      await BoardService.save(boardRequest);
+      if (currentBoardId === settingsBoardId) {
+        triggerBoardReload((prev) => !prev);
+      }
       triggerBoardListReload((prev) => prev + 1);
       setShowBoardSettingsWindow(false);
     } catch (error: any) {
@@ -240,9 +268,7 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
                           type="button"
                           disabled={currentUserPermissionLevel !== 3}
                           onClick={() => {
-                            setTableList(
-                              moveDown(key, tableList) || tableList,
-                            );
+                            setTableList(moveDown(key, tableList) || tableList);
                           }}
                         >
                           <TbArrowBadgeUpFilled />
@@ -251,9 +277,7 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
                           type="button"
                           disabled={currentUserPermissionLevel !== 3}
                           onClick={() => {
-                            setTableList(
-                              moveUp(key, tableList) || tableList,
-                            );
+                            setTableList(moveUp(key, tableList) || tableList);
                           }}
                         >
                           <TbArrowBadgeDownFilled />
@@ -265,9 +289,7 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
                         disabled={currentUserPermissionLevel !== 3}
                         onClick={() => {
                           setTableList(
-                            tableList.filter(
-                              (value, index) => index !== key,
-                            ),
+                            tableList.filter((_, index) => index !== key),
                           );
                         }}
                       >
@@ -354,9 +376,7 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
                         type="button"
                         disabled={currentUserPermissionLevel !== 3}
                         onClick={() => {
-                          setUsers(
-                            users.filter((value, index) => index !== key),
-                          );
+                          setUsers(users.filter((_, index) => index !== key));
                         }}
                       >
                         &#x2212;
@@ -373,6 +393,7 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
             <ActionButton label="save" onClick={handleBoardSave} />
           </div>
         </div>
+        <DeleteButton handleDelete={handleDeleteFetch} classname={""} />
       </ModelWindow>
     </>
   );

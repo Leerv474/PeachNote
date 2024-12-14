@@ -2,9 +2,12 @@ import IBoard from "../../../interfaces/IBoard";
 
 export default interface BoardProps {
   sidebarOpen: boolean;
-  setShowCreateTask: React.Dispatch<React.SetStateAction<boolean>>;
+  openCreateTaskWindow: (projectId: number, projectName: string) => void;
   openProjectWindow: (id: number) => void;
   openTaskWindow: (id: number) => void;
+  openOrganizeWindow: (id: number, title: string) => void;
   boardData: IBoard | null;
   tableReload: number;
+  triggerTableReload: React.Dispatch<React.SetStateAction<number>>;
+  projectListReload: number;
 }

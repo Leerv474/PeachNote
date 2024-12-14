@@ -8,9 +8,7 @@ import io.leerv.peach_note.project.Project;
 import io.leerv.peach_note.project.ProjectUtil;
 import io.leerv.peach_note.statusTable.StatusTable;
 import io.leerv.peach_note.statusTable.StatusTableUtil;
-import io.leerv.peach_note.task.dto.TaskCreateRequest;
-import io.leerv.peach_note.task.dto.TaskDto;
-import io.leerv.peach_note.task.dto.TaskEditRequest;
+import io.leerv.peach_note.task.dto.*;
 import io.leerv.peach_note.user.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,18 +29,15 @@ public class TaskService {
 
 
     @Transactional
-    public TaskDto create(TaskCreateRequest request, User user) {
+    public TaskCreateResponse create(TaskCreateRequest request, User user) {
         boolean isEditor = boardPermissionUtil.userIsEditor(user.getId(), request.getBoardId());
         if (!isEditor) {
             throw new OperationNotPermittedException("User isn't an editor of the current board");
         }
-
         if (taskUtil.isUniqueTaskTitle(request.getTitle(), request.getBoardId())) {
             throw new IllegalRequestContentException("Task must be unique in current board");
         }
-
         StatusTable statusTable = statusTableUtil.findBucketByBoardId(request.getBoardId());
-
         Project project = null;
         LocalDate deadline = null;
         if (request.getProjectId() != null) {
@@ -62,15 +57,9 @@ public class TaskService {
                 .build();
         repository.save(newTask);
 
-        return TaskDto.builder()
+        return TaskCreateResponse.builder()
+                .taskId(newTask.getId())
                 .title(newTask.getTitle())
-                .description(newTask.getDescription())
-                .deadline(newTask.getDeadline())
-                .creationDate(newTask.getCreationDate())
-                .completionDate(newTask.getCompletionDate())
-                .projectId(project == null ? null : newTask.getProject().getId())
-                .statusTableId(statusTable.getId())
-                .priority(taskUtil.calculatePriority(newTask))
                 .build();
     }
 
@@ -134,7 +123,19 @@ public class TaskService {
         }
         Integer currentDisplayOrder = task.getStatusTable().getDisplayOrder();
         Long boardId = task.getStatusTable().getBoard().getId();
-        task.setStatusTable(statusTableUtil.findNextStatus(currentDisplayOrder, boardId));
+        switch (currentDisplayOrder) {
+            case 0:
+                throw new IllegalRequestContentException("You can't promote a non organized task");
+            case 1:
+                task.setStatusTable(statusTableUtil.findCurrentByBoardId(boardId));
+                break;
+            case 2, 3:
+                task.setStatusTable(statusTableUtil.findFirstCompletionStatus(boardId));
+                break;
+            default:
+                task.setStatusTable(statusTableUtil.findNextStatus(currentDisplayOrder, boardId));
+                break;
+        }
         repository.save(task);
     }
 
@@ -165,5 +166,56 @@ public class TaskService {
         }
         projectUtil.createFromTask(task);
         repository.delete(task);
+    }
+
+    public void putInAwait(User user, Long taskId) {
+        Task task = taskUtil.findTaskById(taskId);
+        boolean userIsEditor = boardPermissionUtil.userIsEditor(user.getId(), task.getStatusTable().getBoard().getId());
+        if (!userIsEditor) {
+            throw new OperationNotPermittedException("User isn't an editor of the current board");
+        }
+        StatusTable awaitTable = statusTableUtil.findAwaitByBoardId(task.getStatusTable().getBoard().getId());
+        task.setStatusTable(awaitTable);
+        repository.save(task);
+    }
+
+
+    public void putInDelayed(User user, Long taskId) {
+        Task task = taskUtil.findTaskById(taskId);
+        boolean userIsEditor = boardPermissionUtil.userIsEditor(user.getId(), task.getStatusTable().getBoard().getId());
+        if (!userIsEditor) {
+            throw new OperationNotPermittedException("User isn't an editor of the current board");
+        }
+        StatusTable delayedTable = statusTableUtil.findDelayedByBoardId(task.getStatusTable().getBoard().getId());
+        task.setStatusTable(delayedTable);
+        repository.save(task);
+    }
+
+    public void putInCurrent(User user, Long taskId) {
+        Task task = taskUtil.findTaskById(taskId);
+        boolean userIsEditor = boardPermissionUtil.userIsEditor(user.getId(), task.getStatusTable().getBoard().getId());
+        if (!userIsEditor) {
+            throw new OperationNotPermittedException("User isn't an editor of the current board");
+        }
+        StatusTable currentTable = statusTableUtil.findCurrentByBoardId(task.getStatusTable().getBoard().getId());
+        task.setStatusTable(currentTable);
+        repository.save(task);
+    }
+
+    public TaskDataResponse viewData(User user, Long taskId) {
+        Task task = taskUtil.findTaskById(taskId);
+        boolean userIsViewer = boardPermissionUtil.userHasAccess(user.getId(), task.getStatusTable().getBoard().getId());
+        if (!userIsViewer) {
+            throw new OperationNotPermittedException("User isn't an editor of the current board");
+        }
+        return TaskDataResponse.builder()
+                .taskId(task.getId())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .deadline(task.getDeadline())
+                .projectId(task.getProject() != null ? task.getProject().getId() : null)
+                .projectTitle(task.getProject() != null ? task.getProject().getTitle() : null)
+                .userPermissionLevel(boardPermissionUtil.getUserPermission(task.getStatusTable().getBoard().getId(), user.getId()))
+                .build();
     }
 }

@@ -1,0 +1,48 @@
+.window_size {
+  width: 750px;
+  height: fit-content;
+}
+.title_container {
+  height: 60px;
+  display: flex;
+}
+
+.title {
+  height: 45px;
+  width: 90%;
+  background-color: var(--secondary-color40);
+  border-radius: 10px;
+  font-size: 20px;
+  margin: 0 10px;
+  padding: 10px;
+}
+
+.options_container {
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+}
+
+.option {
+  width: 100%;
+  display: flex;
+  height: 60px;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--accent-blue);
+  margin-bottom: 5px;
+}
+
+.option_context {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.action_button {
+  height: 50px;
+  width: 300px;
+  padding-top: 8px;
+}

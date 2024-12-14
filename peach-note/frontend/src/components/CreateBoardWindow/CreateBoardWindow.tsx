@@ -4,7 +4,6 @@ import classNames from "classnames";
 import CreateBoardWindowProps from "./props/CreateBoardWindowProps";
 import { ModelWindow } from "../ui/ModelWindow/ModelWindow";
 import { ActionButton } from "../ui/ActionButton/ActionButton";
-import UserService from "../../services/UserService";
 import BoardService from "../../services/BoardService";
 import IBoardCreateRequest from "../../interfaces/IBoardCreateRequest";
 import { FaPlus } from "react-icons/fa";
@@ -131,7 +130,7 @@ export const CreateBoardWindow: React.FC<CreateBoardWindowProps> = ({
       setBoardId(boardData.boardId);
       setShowCreateBoard(false);
     } catch (error: any) {
-      const errorMessage = error.response;
+      const errorMessage = error.response.data;
       setErrorMessage(
         errorMessage?.error || errorMessage.businessError || "unexpected error",
       );

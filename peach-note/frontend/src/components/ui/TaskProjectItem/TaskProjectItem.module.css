@@ -1,0 +1,84 @@
+.container {
+  width: 100%;
+  background-color: var(--secondary-color60);
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+}
+
+.container:hover {
+  transform: scale(1.01);
+}
+
+.title_container {
+  width: 100%;
+}
+
+.title_container p {
+  font-size: 18px;
+  padding: 10px;
+  padding-right: 50px;
+  text-wrap: wrap;
+  text-align: justify;
+  color: var(--text-dark70);
+}
+
+
+.bottom_bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 50px;
+}
+
+.last_status {
+  padding-right: 10px;
+}
+
+.deadline {
+  font-size: 16px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 0px;
+  gap: 5px;
+}
+
+.status_name {
+  background-color: var(--accent-blue80);
+  width: fit-content;
+  color: var(--text-light);
+  border-radius: 5px;
+  padding: 2px 5px 3px 5px;
+  margin: 2px 5px;
+}
+
+.promote_button {
+  height: 100%;
+  width: 40px;
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0 10px 10px 0;
+  cursor: pointer;
+}
+
+.promote_button:hover .arrow {
+  color: var(--text-dark70);
+}
+
+.arrow {
+  transform: rotate(90deg);
+  transition: color 0.2s ease;
+}

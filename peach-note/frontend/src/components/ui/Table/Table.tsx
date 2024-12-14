@@ -8,9 +8,12 @@ import ITable from "../../../interfaces/ITable";
 
 export const Table: React.FC<TableProps> = ({
   tableId,
+  isFirstStatus = false,
   isLastStatus = false,
+  openOrganizeWindow,
   openTaskWindow,
   tableReload,
+  triggerTableReload,
 }) => {
   const { store } = useContext(Context);
 
@@ -21,7 +24,7 @@ export const Table: React.FC<TableProps> = ({
       setTableData(responseData);
     };
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableReload]);
 
   return (
@@ -32,17 +35,22 @@ export const Table: React.FC<TableProps> = ({
         </div>
         <div className={classNames(style.task_list)}>
           {tableData?.taskList.length !== 0 ? (
-            tableData?.taskList.sort((a, b) => b.priority - a.priority).map(({ taskId, title, priority }) => {
-              return (
-                <TaskItem
-                  key={taskId}
-                  title={title}
-                  taskId={taskId}
-                  isLastStatus={isLastStatus}
-                  openTaskWindow={openTaskWindow}
-                />
-              );
-            })
+            tableData?.taskList
+              .sort((a, b) => b.priority - a.priority)
+              .map(({ taskId, title, priority }) => {
+                return (
+                  <TaskItem
+                    key={taskId}
+                    title={title}
+                    taskId={taskId}
+                    isInBucket={isFirstStatus}
+                    isLastStatus={isLastStatus}
+                    openTaskWindow={openTaskWindow}
+                    openOrganizeWindow={openOrganizeWindow}
+                    triggerTableReload={triggerTableReload}
+                  />
+                );
+              })
           ) : (
             <div className={classNames(style.empty_message)}>
               <p>Empty table</p>

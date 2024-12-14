@@ -6,7 +6,6 @@ import io.leerv.peach_note.exceptions.OperationNotPermittedException;
 import io.leerv.peach_note.exceptions.RecordNotFound;
 import io.leerv.peach_note.permission.BoardPermissionUtil;
 import io.leerv.peach_note.project.ProjectUtil;
-import io.leerv.peach_note.statusTable.StatusTable;
 import io.leerv.peach_note.statusTable.StatusTableUtil;
 import io.leerv.peach_note.user.User;
 import io.leerv.peach_note.user.UserRepository;
@@ -29,6 +28,7 @@ public class BoardService {
     private final ProjectUtil projectUtil;
     private final BoardMapper boardMapper;
 
+    @Transactional
     public BoardCreateResponse create(BoardCreateRequest request, User authenticatedUser) {
         Board board = Board.builder()
                 .name(request.getName())
@@ -225,7 +225,7 @@ public class BoardService {
         Board board = repository.findById(request.getBoardId())
                 .orElseThrow(() -> new RecordNotFound("Board not found"));
         statusTableUtil.updateStatusTables(board, request.getAdditionalStatusList());
-        boardPermissionUtil.updatePermissions(board, request.getUserList());
+        boardPermissionUtil.updatePermissions(board, request.getUserList(), authenticatedUser.getName());
         board.setName(request.getName());
         repository.save(board);
         return BoardUpdateResponse.builder()

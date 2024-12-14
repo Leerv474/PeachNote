@@ -1,0 +1,70 @@
+.button_container {
+  position: absolute;
+  right: -40px;
+  bottom: 30px;
+  height: 60px;
+  width: fit-content;
+  background: var(--secondary-color30);
+  overflow: hidden;
+  border-radius: 0 10px 10px 0;
+  transition: transform 0.3s ease;
+  transform-origin: left;
+  user-select: none;
+}
+
+.expanded {
+  right: -120px;
+  transform-origin: left;
+}
+
+.button_container button {
+  font-size: 40px;
+  background: none;
+  outline: none;
+  border: none;
+  color: var(--accent-red70);
+  transition: color 0.2s ease;
+  cursor: pointer;
+  width: 40px;
+  height: 100%;
+}
+
+.button_container button:hover {
+  color: var(--accent-red);
+}
+
+.icon {
+  height: 60px;
+}
+
+.confirmation_window {
+  height: 200px;
+  width: 400px;
+}
+
+.confirmation_container {
+  padding: 5px;
+  width: 120px;
+}
+
+.confirmation_container p {
+  text-align: center;
+  width: 100%;
+}
+.confirnation_buttons_container {
+  display: flex;
+  padding: 0 15px;
+  padding-top: 5px;
+  width: 100%;
+}
+
+.confirnation_buttons_container button {
+  font-size: 18px;
+  background: none;
+  outline: none;
+  border: none;
+  background-color: var(--accent-red70);
+  color: var(--text-light);
+  width: 100%;
+  border-radius: 5px;
+}

@@ -22,11 +22,14 @@
   transform: scale(0.99);
 }
 
-.item_container p {
+.item_container .title {
   height: 100%;
   font-size: 20px;
   text-align: justify;
   text-wrap: wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
   color: var(--text-dark70);
 }
 

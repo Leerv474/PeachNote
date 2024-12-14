@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import style from "./ModelWindow.module.css";
 import classNames from "classnames";
-import { ActionButton } from "../ActionButton/ActionButton";
 import ModelWindowProps from "./props/ModelWindowProps";
 
 export const ModelWindow: React.FC<ModelWindowProps> = ({

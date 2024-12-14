@@ -8,6 +8,7 @@ import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.project.ProjectMapper;
 import io.leerv.peach_note.statusTable.StatusTable;
 import io.leerv.peach_note.statusTable.StatusTableMapper;
+import io.leerv.peach_note.statusTable.dto.StatusTableItemDto;
 import io.leerv.peach_note.user.UserMapper;
 import io.leerv.peach_note.user.dto.UserPermissionDto;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,9 @@ public class BoardMapper {
                         .orElseGet(List::of)
                         .stream().map(foo -> foo.getUser().getId()).toList())
                 .projectList(board.getProjectList() != null ? board.getProjectList().stream().map(projectMapper::mapToProjectItemDto).toList() : null)
-                .statusTableList(board.getStatusTableList().stream().map(statusTableMapper::mapToStatusTableItemDto).toList())
+                .statusTableList(board.getStatusTableList().stream()
+                        .map(statusTableMapper::mapToStatusTableItemDto)
+                        .sorted(Comparator.comparingInt(StatusTableItemDto::getDisplayOrder)).toList())
                 .build();
     }
 

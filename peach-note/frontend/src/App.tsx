@@ -15,6 +15,7 @@ function App() {
     if (localStorage.getItem("access_token")) {
       store.loadUser();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!store.isAuth) {
