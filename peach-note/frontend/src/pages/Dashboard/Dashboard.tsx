@@ -59,9 +59,17 @@ export const Dashboard: React.FC = () => {
   };
 
   const [showOrganizeWindow, setShowOrganizeWindow] = useState(false);
-  const [organizeTaskData, setOrganizeTaskId] = useState<ITaskOrganizeData>();
-  const openOrganizeTaskWindow = (taskId: number, title: string, isTaskProject: boolean = false) => {
-    setOrganizeTaskId({ taskId: taskId, title: title, isTaskProject: isTaskProject});
+  const [organizeTaskData, setOrganizeTaskData] = useState<ITaskOrganizeData>();
+  const openOrganizeTaskWindow = (
+    taskId: number,
+    title: string,
+    isTaskProject: boolean,
+  ) => {
+    setOrganizeTaskData({
+      taskId: taskId,
+      title: title,
+      isTaskProject: isTaskProject,
+    });
     setShowOrganizeWindow(true);
   };
 
@@ -146,6 +154,7 @@ export const Dashboard: React.FC = () => {
             currentBoardId={boardId}
             setCurrentBoardId={setBoardId}
             triggerBoardReload={triggerBoardReload}
+            setBoardData={setBoardData}
           />
         ) : null}
         {showCreateTaskWindow ? (
@@ -157,6 +166,7 @@ export const Dashboard: React.FC = () => {
             triggerTableReload={triggerTableReload}
             openOrganizeTaskWindow={openOrganizeTaskWindow}
             triggerTaskListReload={triggerTaskListReload}
+            triggerProjectListReload={triggerProjectListReload}
           />
         ) : null}
         {showOrganizeWindow ? (

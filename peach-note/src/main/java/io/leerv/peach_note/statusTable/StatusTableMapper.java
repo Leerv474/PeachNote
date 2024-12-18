@@ -1,9 +1,10 @@
 package io.leerv.peach_note.statusTable;
 
 
+import org.springframework.stereotype.Component;
+
 import io.leerv.peach_note.statusTable.dto.AdditionalTablesDto;
 import io.leerv.peach_note.statusTable.dto.StatusTableItemDto;
-import org.springframework.stereotype.Component;
 
 @Component
 public class StatusTableMapper {

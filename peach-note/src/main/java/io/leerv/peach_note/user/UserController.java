@@ -17,6 +17,16 @@ import java.util.Map;
 public class UserController {
     private final UserService service;
 
+    @GetMapping("/view_user_data")
+    public ResponseEntity<UserDto> viewUserData(
+            Authentication authentication
+    ) {
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(
+                service.getUserData(user)
+        );
+    }
+
     @GetMapping("/get_username")
     public ResponseEntity<SimpleUserDto> getUsername(
             Authentication authentication
@@ -40,12 +50,12 @@ public class UserController {
         return ResponseEntity.ok().headers(httpHeaders).build();
     }
 
-    @PostMapping("/changePassword")
+    @PostMapping("/change_password")
     public ResponseEntity<?> changePassword(
             @Valid @RequestBody UserChangePasswordRequest request,
             Authentication authentication
     ) {
-        Map<String, String> newJwtPair = service.changePassword(authentication, request.getPassword(), request.getNewPassword());
+        Map<String, String> newJwtPair = service.changePassword(authentication, request.getPassword());
         String refreshTokenCookie = String.format(
                 "refresh_token=%s; Max-Age=%s; Path=%s; HttpOnly",
                 newJwtPair.get("refreshToken"), 30 * 24 * 60 * 60, "/"
@@ -56,7 +66,7 @@ public class UserController {
         return ResponseEntity.ok().headers(httpHeaders).build();
     }
 
-    @PostMapping("/changeEmail")
+    @PostMapping("/change_email")
     public ResponseEntity<?> changeEmail(
             @Valid @RequestBody UserChangeEmailRequest request,
             Authentication authentication

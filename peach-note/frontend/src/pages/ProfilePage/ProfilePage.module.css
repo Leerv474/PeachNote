@@ -41,13 +41,14 @@
   border-radius: 40px;
   background-color: var(--background-color);
   align-items: center;
+  position: relative;
+  user-select: none;
 }
 
 .title_box {
   display: flex;
   align-items: center;
   margin: 10px 0;
-  user-select: none;
 }
 
 .title_box h1 img {
@@ -201,7 +202,7 @@
   font-size: 18pt;
   text-align: justify;
   margin: 0 25px;
-  color: var(--text-dark);
+  color: var(--text-dark70);
 }
 
 .user_data_container {
@@ -319,4 +320,95 @@
 
 .data input:focus {
   border-bottom: 2px solid var(--accent-blue);
+}
+
+.back_button {
+  position: absolute;
+  left: 50px;
+  top: 30px;
+  height: 70px;
+  font-size: 70px;
+  border: none;
+  background: none;
+  color: var(--accent-blue);
+  cursor: pointer;
+}
+
+.back_button:hover {
+  animation: wobble 2.5s ease-in-out infinite;
+}
+
+@keyframes slide{
+  to {
+    transform: translateY(0);
+  }
+}
+
+.message {
+  position: absolute;
+  height: 80px;
+  width: 100%;
+  z-index: 100;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.error, .success{
+  height: 100%;
+  width: 200px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(100px);
+  opacity: 1;
+  animation: slide 0.3s ease forwards;
+  transition: opacity 0.3s ease;
+}
+
+.error {
+  background: var(--accent-red);
+}
+
+.success {
+  background: var(--accent-green);
+}
+
+.disappear {
+  opacity: 0;
+}
+
+.message p{
+  text-wrap: stable;
+  color: var(--text-light);
+  text-align: center;
+  font-size: 16px;
+}
+
+.auth_button {
+  position: absolute;
+  bottom: 50px;
+  right: 30px;
+  z-index: 1000;
+  font-size: 20pt;
+  border-radius: 20px;
+  padding: 7px 20px 15px 20px;
+  width: 180px;
+  height: 50px;
+  text-align: center;
+  background-color: var(--secondary-color);
+  color: var(--text-dark10);
+  border: none;
+  background-color: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.auth_button:hover {
+  transform: translateX(5px);
+  box-shadow: -7px 7px 15px var(--secondary-color70);
 }

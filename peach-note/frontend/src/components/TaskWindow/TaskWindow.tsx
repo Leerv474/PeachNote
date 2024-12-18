@@ -223,7 +223,7 @@ export const TaskWindow: React.FC<TaskWindowProps> = ({
                 openProjectWindow(taskData.projectId || -1);
               }}
             >
-              <p>{taskData.projectId}</p>
+              <p>{taskData.projectTitle}</p>
             </div>
           ) : null}
         </div>

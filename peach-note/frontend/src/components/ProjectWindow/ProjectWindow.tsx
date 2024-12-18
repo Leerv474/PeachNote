@@ -182,9 +182,9 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
           </div>
           <div className={classNames(style.task_list_box)}>
             <div className={classNames(style.task_list_scroll_container)}>
-              {projectData?.taskList ? (
+              {projectData?.taskList.length !== 0 ? (
                 projectData?.taskList
-                  .sort((a, b) => a.priority - b.priority)
+                  .sort((a, b) => a.priority - b.priority).sort((a, b) => a.statusTable.displayOrder - b.statusTable.displayOrder)
                   .map((task, index) => (
                     <TaskProjectItem
                       key={index}

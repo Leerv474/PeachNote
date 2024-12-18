@@ -9,6 +9,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   title,
   taskId,
   isLastStatus,
+  isTaskProject,
   openOrganizeWindow,
   openTaskWindow,
   triggerTableReload,
@@ -16,7 +17,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 }) => {
   const handleActionButton = async () => {
     if (isInBucket) {
-      openOrganizeWindow(taskId, title);
+      openOrganizeWindow(taskId, title, isTaskProject);
       return;
     }
     try {

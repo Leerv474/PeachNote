@@ -34,9 +34,6 @@ public class TaskService {
         if (!isEditor) {
             throw new OperationNotPermittedException("User isn't an editor of the current board");
         }
-        if (taskUtil.isUniqueTaskTitle(request.getTitle(), request.getBoardId())) {
-            throw new IllegalRequestContentException("Task must be unique in current board");
-        }
         StatusTable statusTable = statusTableUtil.findBucketByBoardId(request.getBoardId());
         Project project = null;
         LocalDate deadline = null;

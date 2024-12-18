@@ -119,6 +119,7 @@ public class AuthenticationService {
         return Map.of("accessToken", newAccessToken, "refreshToken", newRefreshToken);
     }
 
+    @Transactional
     public void logout(String refreshToken) {
         jwtTokenService.invalidateRefreshToken(refreshToken);
     }

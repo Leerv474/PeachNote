@@ -18,6 +18,7 @@ public class TaskMapper {
                 .taskId(task.getId())
                 .title(task.getTitle())
                 .priority(taskUtil.calculatePriority(task))
+                .isTaskProject(task.getProject() != null)
                 .build();
     }
 

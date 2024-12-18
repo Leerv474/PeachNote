@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import style from "./Board.module.css";
 import classNames from "classnames";
 import BoardProps from "./props/BoardProps";
@@ -18,6 +18,8 @@ export const Board: React.FC<BoardProps> = ({
   triggerTableReload,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+  }, [boardData])
 
   return (
     <>

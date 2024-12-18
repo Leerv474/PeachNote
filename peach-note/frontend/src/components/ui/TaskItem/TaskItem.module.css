@@ -75,7 +75,7 @@
 }
 
 .next_status_button:hover .arrow {
-  color: var(--text-light120);
+  color: var(--text-light);
 }
 
 .next_status_button:active .arrow {

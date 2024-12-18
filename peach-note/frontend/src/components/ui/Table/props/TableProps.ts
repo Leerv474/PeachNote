@@ -3,7 +3,11 @@ export default interface TableProps {
   isLastStatus?: boolean;
   isFirstStatus?: boolean;
   openTaskWindow: (id: number) => void;
-  openOrganizeWindow: (id: number, title: string) => void;
+  openOrganizeWindow: (
+    id: number,
+    title: string,
+    isTaskProject: boolean,
+  ) => void;
   triggerTableReload: React.Dispatch<React.SetStateAction<number>>;
   tableReload: number;
 }

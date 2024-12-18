@@ -4,6 +4,7 @@ export default interface CreateTaskProps {
   createTaskProjectName: string;
   setShowCreateTask: React.Dispatch<React.SetStateAction<boolean>>;
   triggerTableReload: React.Dispatch<React.SetStateAction<number>>;
-  openOrganizeTaskWindow: (taskId: number, title: string) => void;
+  openOrganizeTaskWindow: (taskId: number, title: string, isTaskProject: boolean) => void;
   triggerTaskListReload: React.Dispatch<React.SetStateAction<number>>;
+  triggerProjectListReload: React.Dispatch<React.SetStateAction<number>>;
 }

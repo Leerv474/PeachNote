@@ -1,6 +1,20 @@
 package io.leerv.peach_note.board;
 
-import io.leerv.peach_note.board.dto.*;
+import java.util.List;
+import java.util.Map;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import io.leerv.peach_note.board.dto.BoardCreateRequest;
+import io.leerv.peach_note.board.dto.BoardCreateResponse;
+import io.leerv.peach_note.board.dto.BoardDataResponse;
+import io.leerv.peach_note.board.dto.BoardDto;
+import io.leerv.peach_note.board.dto.BoardSimpleDto;
+import io.leerv.peach_note.board.dto.BoardUpdateRequest;
+import io.leerv.peach_note.board.dto.BoardUpdateResponse;
 import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.exceptions.OperationNotPermittedException;
 import io.leerv.peach_note.exceptions.RecordNotFound;
@@ -10,13 +24,7 @@ import io.leerv.peach_note.statusTable.StatusTableUtil;
 import io.leerv.peach_note.user.User;
 import io.leerv.peach_note.user.UserRepository;
 import io.leerv.peach_note.user.dto.UserPermissionDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +38,9 @@ public class BoardService {
 
     @Transactional
     public BoardCreateResponse create(BoardCreateRequest request, User authenticatedUser) {
+        if (repository.boardNameExistsByUserId(authenticatedUser.getId(), request.getName())) {
+            throw new IllegalRequestContentException("board with this name already exists");
+        }
         Board board = Board.builder()
                 .name(request.getName())
                 .build();

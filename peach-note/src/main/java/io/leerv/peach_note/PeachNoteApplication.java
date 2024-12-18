@@ -1,9 +1,5 @@
 package io.leerv.peach_note;
 
-import io.leerv.peach_note.authorities.Role;
-import io.leerv.peach_note.authorities.RoleRepository;
-import io.leerv.peach_note.permission.Permission;
-import io.leerv.peach_note.permission.PermissionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import io.leerv.peach_note.authorities.Role;
+import io.leerv.peach_note.authorities.RoleRepository;
+import io.leerv.peach_note.permission.Permission;
+import io.leerv.peach_note.permission.PermissionRepository;
 
 @SpringBootApplication
 @EnableScheduling
@@ -20,9 +21,6 @@ public class PeachNoteApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PeachNoteApplication.class, args);
 	}
-
-	// TODO: absolutely needed
-	// 		- check for uniqueness of names of boards, status tables, tasks and projects for each user
 
 	@Bean
 	public CommandLineRunner runner(RoleRepository roleRepository, PermissionRepository permissionRepository) {

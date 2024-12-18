@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./Table.module.css";
 import classNames from "classnames";
 import TableProps from "./props/TableProps";
 import { TaskItem } from "../TaskItem/TaskItem";
-import { Context } from "../../..";
 import ITable from "../../../interfaces/ITable";
+import TableService from "../../../services/TableService";
 
 export const Table: React.FC<TableProps> = ({
   tableId,
@@ -15,13 +15,17 @@ export const Table: React.FC<TableProps> = ({
   tableReload,
   triggerTableReload,
 }) => {
-  const { store } = useContext(Context);
 
   const [tableData, setTableData] = useState<ITable>();
   useEffect(() => {
     const fetchData = async () => {
-      const responseData = await store.viewTable(tableId);
-      setTableData(responseData);
+      try {
+        const response = await TableService.viewTable(tableId);
+        setTableData(response.data);
+        console.log(response.data)
+      } catch (error: any) {
+        console.log(error.response.data);
+      }
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,12 +41,13 @@ export const Table: React.FC<TableProps> = ({
           {tableData?.taskList.length !== 0 ? (
             tableData?.taskList
               .sort((a, b) => b.priority - a.priority)
-              .map(({ taskId, title, priority }) => {
+              .map(({ taskId, title, priority, taskProject}) => {
                 return (
                   <TaskItem
                     key={taskId}
                     title={title}
                     taskId={taskId}
+                    isTaskProject={taskProject}
                     isInBucket={isFirstStatus}
                     isLastStatus={isLastStatus}
                     openTaskWindow={openTaskWindow}

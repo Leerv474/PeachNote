@@ -99,15 +99,4 @@ export default class Store {
       return undefined;
     }
   }
-
-  async viewTable(tableId: number): Promise<ITable | undefined> {
-    try {
-      const response = await TableService.viewTable(tableId);
-      return response.data;
-    } catch (error: any) {
-      console.log(error.response?.error);
-      console.log(error.response?.businessError);
-      return undefined;
-    }
-  }
 }

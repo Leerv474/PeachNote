@@ -1,5 +1,6 @@
 .window_size {
   /*width: 50%;*/
+  width: fit-content;
   height: 60%;
   z-index: 10;
   display: flex;
@@ -18,14 +19,13 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  margin-right: 20px;
   border-left: 2px solid var(--text-dark40);
 }
 
 .top_bar {
   height: 60px;
   display: flex;
-  margin-right: 30px;
+  margin-right: 40px;
 }
 
 .title_input {

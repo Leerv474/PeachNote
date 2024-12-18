@@ -5,6 +5,7 @@ import io.leerv.peach_note.exceptions.IllegalRequestContentException;
 import io.leerv.peach_note.security.JwtTokenService;
 import io.leerv.peach_note.user.dto.SimpleUserDto;
 import io.leerv.peach_note.user.dto.UserDeleteRequest;
+import io.leerv.peach_note.user.dto.UserDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,16 +50,12 @@ public class UserService {
         return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
     }
 
-    public Map<String, String> changePassword(Authentication authentication, String password, String newPassword) {
+    public Map<String, String> changePassword(Authentication authentication, String password) {
         User authenticatedUser = (User) authentication.getPrincipal();
 
         User user = repository.findById(authenticatedUser.getId())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (!encoder.matches(password, user.getPassword())) {
-            throw new IllegalRequestContentException("Incorrect password");
-        }
-        //todo: validator
-        user.setPassword(encoder.encode(newPassword));
+        user.setPassword(encoder.encode(password));
         repository.save(user);
 
         Authentication updatedAuth = new UsernamePasswordAuthenticationToken(
@@ -122,5 +119,13 @@ public class UserService {
     public List<Long> usersExist(List<String> usernames) {
         List<User> userList = repository.findAllByUsername(usernames);
         return userList.stream().map(User::getId).toList();
+    }
+
+    public UserDto getUserData(User user) {
+        return UserDto.builder()
+                .userId(user.getId())
+                .username(user.getName())
+                .email(user.getEmail())
+                .build();
     }
 }

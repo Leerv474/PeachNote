@@ -13,4 +13,5 @@ public class UserChangeEmailRequest {
     @NotBlank(message = "email is mandatory")
     @Email(message = "invalid email format")
     private String email;
+    private Long id;
 }

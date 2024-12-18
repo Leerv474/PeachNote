@@ -7,5 +7,5 @@ export default interface ProjectWindowProps {
   taskListReload: number;
   openTaskWindow: (taskId: number) => void;
   openCreateTaskWindow: (projectId: number, projectName: string) => void;
-            openOrganizeTaskWindow: (taskId: number, title: string) => void;
+  openOrganizeTaskWindow: (taskId: number, title: string, isTaskProject: boolean) => void;
 }

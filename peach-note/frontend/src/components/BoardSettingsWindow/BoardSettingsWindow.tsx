@@ -20,6 +20,7 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
   setShowBoardSettingsWindow,
   triggerBoardListReload,
   triggerBoardReload,
+  setBoardData,
 }) => {
   //NOTE: fetching data
   useEffect(() => {
@@ -154,6 +155,7 @@ export const BoardSettingsWindow: React.FC<BoardSettignsWindowProps> = ({
       triggerBoardListReload((prev) => prev + 1);
       if (currentBoardId === settingsBoardId) {
         setCurrentBoardId(-1);
+        setBoardData(undefined);
       }
       handleMessageDisappearAnimation();
       setShowBoardSettingsWindow(false);

@@ -17,6 +17,7 @@ export const CreateTaskWindow: React.FC<CreateTaskProps> = ({
   createTaskProjectName,
   triggerTableReload,
   triggerTaskListReload,
+  triggerProjectListReload,
   openOrganizeTaskWindow,
 }) => {
   const [errorMessage, setError] = useState("");
@@ -44,11 +45,16 @@ export const CreateTaskWindow: React.FC<CreateTaskProps> = ({
       if (openOriganize) {
         setShowCreateTask(false);
         setOpenOrganize(false);
-        openOrganizeTaskWindow(taskData.taskId, taskData.title);
+        openOrganizeTaskWindow(
+          taskData.taskId,
+          taskData.title,
+          createTaskProjectId !== -1,
+        );
       }
       triggerTableReload((prev) => prev + 1);
       if (createTaskProjectId !== -1) {
         triggerTaskListReload((prev) => prev + 1);
+        triggerProjectListReload((prev) => prev + 1);
       }
       setSuccess("task created");
       setTimeout(() => {

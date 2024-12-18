@@ -5,7 +5,7 @@ export default interface BoardProps {
   openCreateTaskWindow: (projectId: number, projectName: string) => void;
   openProjectWindow: (id: number) => void;
   openTaskWindow: (id: number) => void;
-  openOrganizeWindow: (id: number, title: string) => void;
+  openOrganizeWindow: (id: number, title: string, isTaskProject: boolean) => void;
   boardData: IBoard | null;
   tableReload: number;
   triggerTableReload: React.Dispatch<React.SetStateAction<number>>;

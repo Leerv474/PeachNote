@@ -1,5 +1,5 @@
 export default interface ITaskOrganizeWindow {
   taskId: number;
-  isTaskProject?: boolean;
+  isTaskProject: boolean;
   title: string;
 }

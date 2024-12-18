@@ -91,7 +91,7 @@ export const OrganizeWindow: React.FC<OrganizeWindowProps> = ({
           </p>
         </div>
         <div className={classNames(style.options_container)}>
-          {!taskData?.isTaskProject ? (
+          {!taskData?.isTaskProject &&  (
             <div className={classNames(style.option)}>
               <div className={classNames(style.option_context)}>
                 <GoProjectRoadmap />
@@ -105,7 +105,7 @@ export const OrganizeWindow: React.FC<OrganizeWindowProps> = ({
                 }}
               />
             </div>
-          ) : null}
+          )}
           <div className={classNames(style.option)}>
             <div className={classNames(style.option_context)}>
               <FaRegClock />

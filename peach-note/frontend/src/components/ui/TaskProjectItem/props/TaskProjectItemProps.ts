@@ -9,5 +9,5 @@ export default interface TaskProjectItemProps {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   setSuccessMessage: React.Dispatch<React.SetStateAction<string>>;
   handleMessageDisappearAnimation: () => void;
-  openOrganizeTaskWindow: (taskId: number, title: string, isTaskProject?: boolean) => void;
+  openOrganizeTaskWindow: (taskId: number, title: string, isTaskProject: boolean) => void;
 }

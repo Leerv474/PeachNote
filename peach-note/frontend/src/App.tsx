@@ -27,7 +27,7 @@ function App() {
             <Route path="/auth" element={<AuthPage />} />
             <Route
               path="/dashboard"
-              element={<Navigate to="/auth" replace />}
+              element={<Navigate to="/" replace />}
             />
             <Route path="/profile" element={<Navigate to="/auth" replace />} />
           </Routes>
@@ -41,7 +41,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/auth" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/auth" element={<Navigate to="/profile" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>

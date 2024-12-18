@@ -1,6 +1,7 @@
 package io.leerv.peach_note.security;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
             """)
     List<RefreshToken> findTokensByUserId(Long userId);
 
+    @Modifying
     @Query("""
             delete from RefreshToken rs
             where rs.token = :token

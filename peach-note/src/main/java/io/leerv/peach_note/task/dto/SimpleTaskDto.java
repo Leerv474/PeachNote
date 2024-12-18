@@ -9,4 +9,5 @@ public class SimpleTaskDto {
     private Long taskId;
     private String title;
     private Long priority;
+    private boolean isTaskProject;
 }
